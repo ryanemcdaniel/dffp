@@ -8,5 +8,5 @@
     "scripts": {
         "types": "echo \"[webapp]: type check\" && tsc --noEmit",
         "test": "echo \"Error: no test specified\" && exit 1"
-    },
+    }
 }
