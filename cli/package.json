@@ -1,0 +1,16 @@
+{
+    "name": "@dffp/cli",
+    "version": "1.0.0",
+    "description": "command line tooling workspace",
+    "author": "dffp",
+    "license": "ISC",
+    "scripts": {
+        "types": "echo \"[cli]: type check skipped\"",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "dependencies": {
+        "@types/yargs": "17.0.32",
+        "tsx": "4.7.3",
+        "yargs": "17.7.2"
+    }
+}

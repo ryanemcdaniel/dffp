@@ -1,0 +1,11 @@
+{
+    "name": "@dffp/assets",
+    "version": "1.0.0",
+    "description": "static runtime constants and assets",
+    "author": "dffp",
+    "license": "ISC",
+    "scripts": {
+        "types": "echo \"[assets]: type check\" && tsc --noEmit",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    }
+}

@@ -1,0 +1,5 @@
+root = true
+
+[*.json]
+indent_size = tab
+indent_style = space

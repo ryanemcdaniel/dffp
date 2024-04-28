@@ -1,0 +1,12 @@
+{
+    "name": "@dffp/webapp",
+    "version": "1.0.0",
+    "description": "webapp demonstration workspace",
+    "author": "dffp",
+    "license": "ISC",
+    "devDependencies": {},
+    "scripts": {
+        "types": "echo \"[webapp]: type check\" && tsc --noEmit",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+}

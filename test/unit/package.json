@@ -1,0 +1,12 @@
+{
+    "name": "@dffp/test-unit",
+    "version": "1.0.0",
+    "description": "unit testing workspace",
+    "author": "dffp",
+    "license": "ISC",
+    "devDependencies": {},
+    "scripts": {
+        "types": "echo \"[unit]: type check skipped\"",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    }
+}

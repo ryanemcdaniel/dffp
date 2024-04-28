@@ -1,0 +1,12 @@
+{
+    "name": "@dffp/test-fullstack",
+    "version": "1.0.0",
+    "description": "fullstack testing workspace",
+    "author": "dffp",
+    "license": "ISC",
+    "devDependencies": {},
+    "scripts": {
+        "types": "echo \"[fullstack]: type check skipped\"",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    }
+}
