@@ -5,6 +5,7 @@
     "author": "dffp",
     "license": "ISC",
     "scripts": {
+        "build": "echo \"[cli]: no build\"",
         "types": "echo \"[cli]: type check skipped\"",
         "test": "echo \"Error: no test specified\" && exit 1"
     },

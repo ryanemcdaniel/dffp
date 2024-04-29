@@ -1,0 +1,12 @@
+{
+    "name": "@dffp/lambdas",
+    "version": "1.0.0",
+    "description": "AWS event driven code",
+    "author": "dffp",
+    "license": "ISC",
+    "scripts": {
+        "build": "echo \"[lambdas]: no build\"",
+        "types": "echo \"[lambdas]: type check\" && tsc --noEmit",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    }
+}

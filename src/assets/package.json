@@ -5,6 +5,7 @@
     "author": "dffp",
     "license": "ISC",
     "scripts": {
+        "build": "echo \"[assets]: no build\"",
         "types": "echo \"[assets]: type check\" && tsc --noEmit",
         "test": "echo \"Error: no test specified\" && exit 1"
     }
