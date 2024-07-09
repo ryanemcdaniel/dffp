@@ -1,4 +1,5 @@
 import {Context} from "aws-lambda";
+import {detectTimeout} from "./detect-timeout";
 
 
 interface Ctx<C> {
@@ -17,38 +18,23 @@ interface BindLambda<E, R, C> {
 
 
 export const bindLambda = <E, R, C>(ops: BindLambda<E, R, C>) => {
+    const {init, main} = ops;
 
-    const ctx = ops.init();
-
-    let timeoutId: NodeJS.Timeout;
-
-    const {main} = ops;
+    const ctx = init();
 
     return async (event: E, aws: Context): Promise<R> => {
+        await ctx;
 
-        const trigger = {
-            event,
-            ctx: await ctx,
-            aws
+        const processing = main({event, ctx, aws})
+
+        try {
+            return await detectTimeout(
+                processing,
+                aws.getRemainingTimeInMillis() - 10000,
+            );
+        } catch (e) {
+            console.error(e);
+            return undefined as R;
         }
-
-        const [after] = await Promise.race([
-            main(trigger),
-            new Promise((_, reject) => {
-                timeoutId = setTimeout(
-                    () => {
-                        clearTimeout(timeoutId);
-                        reject(new Error('timeout'))
-                    },
-                    aws.getRemainingTimeInMillis() - 10000,
-                );
-            })
-        ] as const) as [Promise<R>];
-
-        clearTimeout(timeoutId)
-
-
-
-        return after;
     }
 }
