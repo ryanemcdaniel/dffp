@@ -14,21 +14,19 @@
     "devDependencies": {
         "@commitlint/cli": "19.3.0",
         "@commitlint/config-conventional": "19.2.2",
+        "@types/aws-lambda": "8.10.140",
         "@typescript-eslint/eslint-plugin": "7.7.1",
         "@typescript-eslint/parser": "7.7.1",
         "esbuild": "0.20.2",
         "eslint": "8.57.0",
         "husky": "9.0.11",
+        "tsx": "4.16.2",
         "typescript": "5.4.5",
         "vite": "5.2.10",
         "vitest": "1.5.2"
     },
     "workspaces": [
-        "src/lambdas",
-        "test/fullstack",
-        "test/unit",
-        "src/webapp",
-        "src/assets",
-        "cli"
+        "cli",
+        "src/discord"
     ]
 }

@@ -2,8 +2,9 @@
     "compilerOptions": {
         "target": "esnext",
         "lib": ["esnext"],
+        "types": ["node"],
         "module": "esnext",
         "moduleResolution": "bundler",
-        "strict": true
+        "strict": true,
     }
 }
