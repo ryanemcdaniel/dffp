@@ -1,18 +1,22 @@
 import {BuildOptions} from 'esbuild';
 import {readdir} from 'node:fs/promises';
-
-const lambdas = await readdir('src/lambdas', {withFileTypes: true});
-
-console.log(process.cwd());
+import {resolve} from 'node:path';
 
 export default {
-    entryPoints: lambdas
-        .filter((l) => l.isDirectory())
-        .map((l) => `src/lambdas/${l.name}/index.ts`),
-    outdir: 'dist',
 
-    bundle        : true,
-    sourcesContent: false,
+    outdir        : 'dist',
+    allowOverwrite: true,
+    entryPoints   : (await readdir('src', {withFileTypes: true, recursive: true}))
+        .filter((l) => l.name === 'index.ts')
+        .map((l) => resolve(l.path, l.name)),
+
     platform      : 'node',
     target        : 'node20',
+    format        : 'esm',
+    bundle        : true,
+    sourcemap     : 'linked',
+    sourcesContent: false,
+
+    logLevel: 'info',
+
 } satisfies BuildOptions;
