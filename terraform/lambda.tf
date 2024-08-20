@@ -15,6 +15,7 @@ resource "aws_lambda_function" "discord_in" {
   memory_size      = 128
   architectures    = ["arm64"]
   runtime          = "nodejs20.x"
+  timeout = 300
 }
 resource "aws_iam_role" "discord_in" {
   assume_role_policy = data.aws_iam_policy_document.discord_in.json
@@ -22,7 +23,24 @@ resource "aws_iam_role" "discord_in" {
 data "aws_iam_policy_document" "discord_in" {
   statement {
     effect    = "Allow"
-    actions   = ["*"]
-    resources = ["*"]
+    actions   = ["sts:AssumeRole"]
+    principals {
+      type = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
   }
+}
+resource "aws_iam_policy" "discord_in" {
+  policy = data.aws_iam_policy_document.discord_in_policy.json
+}
+data "aws_iam_policy_document" "discord_in_policy" {
+    statement {
+      effect = "Allow"
+      actions = ["*"]
+      resources = ["*"]
+    }
+}
+resource "aws_iam_role_policy_attachment" "discord_in" {
+  policy_arn = aws_iam_policy.discord_in.arn
+  role       = aws_iam_role.discord_in.name
 }
