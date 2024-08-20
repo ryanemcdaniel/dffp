@@ -1,0 +1,9 @@
+root = true
+
+[*.json]
+indent_size = tab
+indent_style = space
+
+[{tsconfig.json, tsconfig.eslint.json}]
+ij_json_property_alignment = align_on_colon
+ij_json_array_wrapping = off

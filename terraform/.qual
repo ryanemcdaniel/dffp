@@ -1,0 +1,11 @@
+aws_region = "us-east-1"
+
+env     = "qual"
+reg     = "us"
+service = "dffp"
+
+coc_url   = ""
+coc_token = ""
+
+discord_url   = ""
+discord_token = ""

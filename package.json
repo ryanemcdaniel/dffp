@@ -1,0 +1,43 @@
+{
+    "name": "@dffp/monorepo",
+    "version": "1.0.0",
+    "description": "",
+    "author": "",
+    "license": "ISC",
+    "type": "module",
+    "scripts": {
+        "build": "npm run build -ws",
+        "types": "npm run types -ws",
+        "lint": "eslint .",
+        "fixlint": "eslint . --fix",
+        "postinstall": "husky"
+    },
+    "dependencies": {
+        "@aws-sdk/client-dynamodb": "3.632.0",
+        "@aws-sdk/lib-dynamodb": "3.632.0",
+        "@hapi/boom": "10.0.1",
+        "@stylistic/eslint-plugin-js": "2.6.4",
+        "joi": "17.13.3"
+    },
+    "devDependencies": {
+        "@commitlint/cli": "19.3.0",
+        "@commitlint/config-conventional": "19.2.2",
+        "@eslint/js": "9.9.0",
+        "@stylistic/eslint-plugin": "2.6.4",
+        "@stylistic/eslint-plugin-plus": "2.6.4",
+        "@stylistic/eslint-plugin-ts": "2.6.4",
+        "@types/aws-lambda": "8.10.140",
+        "@types/eslint__js": "8.42.3",
+        "esbuild": "0.20.2",
+        "eslint": "8.57.0",
+        "husky": "9.0.11",
+        "tsx": "4.16.2",
+        "typescript": "5.4.5",
+        "typescript-eslint": "8.2.0",
+        "vite": "5.2.10",
+        "vitest": "1.5.2"
+    },
+    "workspaces": [
+        "cli"
+    ]
+}
