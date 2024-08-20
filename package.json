@@ -21,6 +21,7 @@
         "joi": "17.13.3"
     },
     "devDependencies": {
+        "@aws-sdk/client-ssm": "3.632.0",
         "@commitlint/cli": "19.3.0",
         "@commitlint/config-conventional": "19.2.2",
         "@eslint/js": "9.9.0",
