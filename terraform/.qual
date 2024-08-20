@@ -4,8 +4,7 @@ env     = "qual"
 reg     = "us"
 service = "dffp"
 
-coc_url   = ""
-coc_token = ""
-
-discord_url   = ""
-discord_token = ""
+coc_url           = ""
+coc_ssm_token     = ""
+discord_url       = ""
+discord_ssm_token = ""
