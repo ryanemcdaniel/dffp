@@ -5,6 +5,7 @@ reg     = "us"
 service = "dffp"
 
 coc_url           = ""
-coc_ssm_token     = ""
+coc_ssm_user      = "COC_USER"
+coc_ssm_password  = "COC_PASSWORD"
 discord_url       = ""
 discord_ssm_token = ""
