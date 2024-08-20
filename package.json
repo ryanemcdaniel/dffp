@@ -30,6 +30,7 @@
         "@stylistic/eslint-plugin-ts": "2.6.4",
         "@types/aws-lambda": "8.10.140",
         "@types/eslint__js": "8.42.3",
+        "@types/node": "22.4.1",
         "dotenv": "16.4.5",
         "esbuild": "0.20.2",
         "eslint": "8.57.0",

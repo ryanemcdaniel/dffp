@@ -1,6 +1,6 @@
 aws_region = "us-east-1"
 
-env     = "qual"
+env     = "prod"
 service = "dffp"
 
 coc_ssm_user      = "COC_USER"
