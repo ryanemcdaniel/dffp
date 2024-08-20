@@ -23,7 +23,8 @@ export default [
             '@stylistic/key-spacing': [2, {
                 align: 'colon',
             }],
-            '@stylistic/object-curly-spacing': [2, 'never'],
+            '@stylistic/object-curly-spacing'   : [2, 'never'],
+            '@stylistic/type-annotation-spacing': [0],
         },
     },
 ];
