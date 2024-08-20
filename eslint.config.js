@@ -21,10 +21,18 @@ export default [
     {
         rules: {
             '@stylistic/key-spacing': [2, {
-                align: 'colon',
+                align: {
+                    on  : 'colon',
+                    mode: 'strict',
+                },
             }],
             '@stylistic/object-curly-spacing'   : [2, 'never'],
             '@stylistic/type-annotation-spacing': [0],
+            '@stylistic/no-multi-spaces'        : [2, {
+                exceptions: {
+                    TSPropertySignature: true,
+                },
+            }],
         },
     },
 ];

@@ -32,7 +32,11 @@ export const handler = async () => {
     const war = show(await client.getWars('#2GR2G0PGG'));
     const currentWar = show(await client.getCurrentWar('#2GR2G0PGG'));
 
-    show(currentWar?.clan.attacks);
+    // show(JSON.stringify(currentWar!.clan.attacks, null, 4));
+    // show(JSON.stringify(currentWar!.clan.attacks).length);
+    // show(JSON.stringify(war, null, 4));
+    // show(JSON.stringify(war, null, 4).length);
+    show(JSON.stringify(await client.getPlayer(players[0].tag), null, 4));
 
     console.log(`${clan.name} (${clan.tag})`);
 };
