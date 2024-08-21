@@ -5,10 +5,6 @@ variable "memory" {}
 variable "timeout" {}
 variable "fn_env" {}
 
-locals {
-    discord_in = "poll_clan"
-}
-
 data "archive_file" "source_code" {
     type        = "zip"
     source_dir  = "../${path.root}/dist/${var.fn_name}"
@@ -16,7 +12,7 @@ data "archive_file" "source_code" {
 }
 
 resource "aws_lambda_function" "main" {
-    function_name    = "${var.prefix}-${local.discord_in}"
+    function_name    = "${var.prefix}-${var.fn_name}"
     role             = aws_iam_role.execution_role.arn
     filename         = data.archive_file.source_code.output_path
     source_code_hash = data.archive_file.source_code.output_sha256

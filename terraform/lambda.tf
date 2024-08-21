@@ -51,4 +51,3 @@ data "aws_iam_policy_document" "lambda_poll_coc" {
     resources = ["*"]
   }
 }
-
