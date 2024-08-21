@@ -24,6 +24,12 @@ resource "aws_lambda_function" "main" {
   environment {
     variables = var.fn_env
   }
+  logging_config {
+    log_group             = aws_cloudwatch_log_group.logs.arn
+    log_format            = "JSON"
+    application_log_level = "TRACE"
+    system_log_level      = "INFO"
+  }
 }
 
 output "fn_name" {
