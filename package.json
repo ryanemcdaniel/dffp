@@ -6,18 +6,21 @@
     "license": "ISC",
     "type": "module",
     "scripts": {
-        "build": "npm run build -ws",
+
         "types": "npm run types -ws",
+        "build": "npm run build -ws",
+
         "lint": "eslint .",
         "fixlint": "eslint . --fix",
-        "postinstall": "husky",
 
         "sso": "aws sso login --profile Admin",
         "exsso": "aws configure export-credentials --profile Admin --format env",
 
         "format": "terraform -chdir=terraform fmt -recursive",
         "plan": "terraform -chdir=terraform plan -var-file=.qual -out .qual.tfplan",
-        "apply": "terraform -chdir=terraform apply .qual.tfplan"
+        "apply": "terraform -chdir=terraform apply .qual.tfplan",
+
+        "postinstall": "husky"
     },
     "dependencies": {
         "@aws-sdk/client-dynamodb": "3.632.0",
@@ -39,7 +42,6 @@
         "@types/aws-lambda": "8.10.140",
         "@types/eslint__js": "8.42.3",
         "@types/node": "22.4.1",
-        "dotenv": "16.4.5",
         "esbuild": "0.20.2",
         "eslint": "8.57.0",
         "husky": "9.0.11",
