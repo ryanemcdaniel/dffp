@@ -36,5 +36,3 @@ export const handler = async () => {
 
     console.log(`${clan.name} (${clan.tag})`);
 };
-
-await handler();
