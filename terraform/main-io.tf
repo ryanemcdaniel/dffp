@@ -9,5 +9,5 @@ variable "discord_ssm_token" {}
 data "aws_caller_identity" "current" {}
 
 output "stuff" {
-    value = data.aws_caller_identity.current.account_id
+  value = data.aws_caller_identity.current.account_id
 }

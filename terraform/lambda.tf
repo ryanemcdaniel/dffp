@@ -26,12 +26,12 @@ data "aws_iam_policy_document" "lambda_api_discord" {
   }
 }
 
-# resource "aws_lambda_permission" "api_discord" {
-#   function_name = module.lambda_api_discord.fn_name
-#   action        = "lambda:InvokeFunction"
-#   principal     = "apigateway.amazonaws.com"
-#   source_arn    = "arn:aws:execute-api:${var.aws_region}:${data.aws_caller_identity.current.account_id}:${aws_api_gateway_rest_api.api_discord.id}/*/${aws_api_gateway_method.api_discord.http_method}${aws_api_gateway_resource.api_discord.path}"
-# }
+resource "aws_lambda_permission" "api_discord" {
+  function_name = module.lambda_api_discord.fn_name
+  action        = "lambda:InvokeFunction"
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "arn:aws:execute-api:${var.aws_region}:${data.aws_caller_identity.current.account_id}:${aws_api_gateway_rest_api.api_discord.id}/*/${aws_api_gateway_method.api_discord.http_method}${aws_api_gateway_resource.api_discord.path}"
+}
 
 
 module "lambda_poll_coc" {
@@ -46,8 +46,8 @@ module "lambda_poll_coc" {
 
 data "aws_iam_policy_document" "lambda_poll_coc" {
   statement {
-    effect = "Allow"
-    actions = ["*"]
+    effect    = "Allow"
+    actions   = ["*"]
     resources = ["*"]
   }
 }
