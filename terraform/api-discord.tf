@@ -27,7 +27,7 @@ resource "aws_api_gateway_stage" "api_discord" {
   stage_name    = "${local.prefix}-api-discord"
   access_log_settings {
     destination_arn = aws_cloudwatch_log_group.logs.arn
-    format          = "JSON"
+    format          = "$context.extendedRequestId"
   }
 }
 
