@@ -18,25 +18,6 @@ provider "aws" {
   }
 }
 
-variable "aws_region" {}
-
-variable "env" {}
-variable "reg" {}
-variable "service" {}
-
-variable "coc_ssm_user" {}
-variable "coc_ssm_password" {}
-variable "discord_url" {}
-variable "discord_ssm_token" {}
-
-data "aws_caller_identity" "current" {}
-
-
 locals {
-  prefix = "${var.env}-${var.reg}-${var.service}"
+  prefix = "${var.env}-${var.service}"
 }
-
-output "stuff" {
-  value = data.aws_caller_identity.current.account_id
-}
-
