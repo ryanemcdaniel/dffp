@@ -8,7 +8,7 @@ resource "aws_api_gateway_rest_api" "api_discord" {
 resource "aws_api_gateway_resource" "api_discord" {
   rest_api_id = aws_api_gateway_rest_api.api_discord.id
   parent_id   = aws_api_gateway_rest_api.api_discord.root_resource_id
-  path_part   = "dffp-api-discord"
+  path_part   = "interactions"
 }
 
 resource "aws_api_gateway_deployment" "api_discord" {
