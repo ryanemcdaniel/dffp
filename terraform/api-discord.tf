@@ -14,7 +14,22 @@ resource "aws_api_gateway_resource" "api_discord" {
 resource "aws_api_gateway_deployment" "api_discord" {
   rest_api_id = aws_api_gateway_rest_api.api_discord.id
   triggers = {
-    redeployment = sha1(jsonencode(aws_api_gateway_rest_api.api_discord.body))
+    redeployment = sha1(jsonencode([
+      aws_api_gateway_rest_api.api_discord.body,
+      aws_api_gateway_resource.api_discord.id,
+
+      aws_api_gateway_method.api_discord_option.id,
+      aws_api_gateway_method_response.api_discord_option.id,
+      aws_api_gateway_integration.api_discord_option.id,
+      aws_api_gateway_integration_response.api_discord_options.id,
+
+      aws_api_gateway_method.api_discord_get.id,
+      aws_api_gateway_method_response.api_discord_get.id,
+      aws_api_gateway_integration.api_discord_get.id,
+
+      aws_api_gateway_method.api_discord_post.id,
+      aws_api_gateway_integration.api_discord_post.id,
+    ]))
   }
   lifecycle {
     create_before_destroy = true
@@ -22,8 +37,8 @@ resource "aws_api_gateway_deployment" "api_discord" {
 }
 
 resource "aws_api_gateway_stage" "api_discord" {
-  deployment_id = aws_api_gateway_deployment.api_discord.id
   rest_api_id   = aws_api_gateway_rest_api.api_discord.id
+  deployment_id = aws_api_gateway_deployment.api_discord.id
   stage_name    = "${local.prefix}-api-discord"
   access_log_settings {
     destination_arn = aws_cloudwatch_log_group.logs.arn

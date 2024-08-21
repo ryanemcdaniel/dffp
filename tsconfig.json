@@ -1,10 +1,13 @@
 {
     "compilerOptions": {
-        "target"          : "esnext",
-        "lib"             : ["esnext"],
-        "types"           : ["node"],
-        "module"          : "esnext",
-        "moduleResolution": "bundler",
-        "strict"          : true
+        "target"              : "esnext",
+        "lib"                 : ["esnext"],
+        "types"               : ["node"],
+        "module"              : "esnext",
+        "moduleResolution"    : "bundler",
+        "isolatedModules"     : true,
+        "esModuleInterop"     : true,
+        "verbatimModuleSyntax": true,
+        "strict"              : true
     }
 }

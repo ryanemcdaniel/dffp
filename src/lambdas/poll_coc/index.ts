@@ -1,10 +1,6 @@
-import {GetParameterCommand, SSMClient} from '@aws-sdk/client-ssm';
-import {Client} from 'clashofclans.js';
-
-const ssm = new SSMClient({
-    region: 'us-east-1',
-});
-const client = new Client();
+import {GetParameterCommand} from '@aws-sdk/client-ssm';
+import {ssm} from '../utils';
+import {coc} from '../coc';
 
 const show = <T>(thing: T): T => {
     console.log(thing);
@@ -21,16 +17,16 @@ export const handler = async () => {
         WithDecryption: true,
     }));
 
-    await client.login({
+    await coc.login({
         email   : user.Parameter!.Value!,
         password: password.Parameter!.Value!,
     });
 
-    const clan = show(await client.getClan('#2GR2G0PGG'));
+    const clan = show(await coc.getClan('#2GR2G0PGG'));
     const players = show(await clan.fetchMembers());
 
-    const war = show(await client.getWars('#2GR2G0PGG'));
-    const currentWar = show(await client.getCurrentWar('#2GR2G0PGG'));
+    const war = show(await coc.getWars('#2GR2G0PGG'));
+    const currentWar = show(await coc.getCurrentWar('#2GR2G0PGG'));
 
     show(currentWar?.clan.attacks);
 

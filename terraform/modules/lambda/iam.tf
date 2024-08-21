@@ -1,6 +1,6 @@
 resource "aws_iam_policy" "execution_policy" {
   name   = "${var.prefix}-${var.fn_name}-execution-policy"
-  policy = var.policy_json
+  policy = var.custom_policy_json
 }
 
 data "aws_iam_policy_document" "execution_role_policy" {
