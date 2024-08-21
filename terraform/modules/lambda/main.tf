@@ -29,3 +29,15 @@ resource "aws_lambda_function" "main" {
         variables = var.fn_env
     }
 }
+
+output "fn_name" {
+    value = aws_lambda_function.main.function_name
+}
+
+output "fn_arn" {
+    value = aws_lambda_function.main.arn
+}
+
+output "fn_invoke_arn" {
+    value = aws_lambda_function.main.invoke_arn
+}
