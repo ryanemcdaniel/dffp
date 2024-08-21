@@ -1,6 +1,6 @@
 import {GetParameterCommand} from '@aws-sdk/client-ssm';
-import {ssm} from '../utils';
-import {coc} from '../coc';
+import {coc} from '../client-coc';
+import {ssm} from '../client-ssm';
 
 const show = <T>(thing: T): T => {
     console.log(thing);

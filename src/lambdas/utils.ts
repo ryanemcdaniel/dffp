@@ -12,7 +12,3 @@ export const tryJson = (body) => {
         return {};
     }
 };
-
-export const ssm = new SSMClient({
-    region: 'us-east-1',
-});

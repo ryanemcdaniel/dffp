@@ -6,7 +6,7 @@ export default {
     entryPoints:
         (await readdir('src', {withFileTypes: true, recursive: true}))
             .filter((l) => l.name === 'index.ts')
-            .map((l) => resolve(l.path, l.name)),
+            .map((l) => resolve(l.parentPath, l.name)),
 
     platform: 'node',
     target  : 'node20',

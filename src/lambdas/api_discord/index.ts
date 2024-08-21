@@ -1,8 +1,9 @@
 import type {APIGatewayProxyEventBase, APIGatewayProxyResult} from 'aws-lambda';
-import {ssm, tryJson} from '../utils';
+import {tryJson} from '../utils';
 import {GetParameterCommand} from '@aws-sdk/client-ssm';
 import {unauthorized} from '@hapi/boom';
 import {verifyKey} from 'discord-interactions';
+import {ssm} from '../client-ssm';
 
 // const isVerified = nacl.sign.detached.verify(
 //     Buffer.from(`${req.headers['X-Signature-Timestamp']}${req.body}`),
