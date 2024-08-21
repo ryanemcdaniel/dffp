@@ -8,7 +8,7 @@ resource "aws_api_gateway_rest_api" "api_discord" {
 resource "aws_api_gateway_resource" "api_discord" {
   rest_api_id = aws_api_gateway_rest_api.api_discord.id
   parent_id   = aws_api_gateway_rest_api.api_discord.root_resource_id
-  path_part   = "dffp"
+  path_part   = "dffp-api-discord"
 }
 
 resource "aws_api_gateway_method" "api_discord" {
@@ -18,10 +18,10 @@ resource "aws_api_gateway_method" "api_discord" {
   authorization = "NONE"
 }
 
-resource "aws_api_gateway_method_response" "proxy" {
+resource "aws_api_gateway_method_response" "api_discord" {
   rest_api_id = aws_api_gateway_rest_api.api_discord.id
   resource_id = aws_api_gateway_resource.api_discord.id
-  http_method = aws_api_gateway_method.api_discord.http_method
+  http_method = "POST"
   status_code = "200"
   response_parameters = {
     "method.response.header.Access-Control-Allow-Headers" = true,
@@ -30,20 +30,20 @@ resource "aws_api_gateway_method_response" "proxy" {
   }
 }
 
-resource "aws_api_gateway_integration" "api_discord_post" {
+resource "aws_api_gateway_integration" "api_discord" {
   rest_api_id             = aws_api_gateway_rest_api.api_discord.id
   resource_id             = aws_api_gateway_resource.api_discord.id
-  http_method             = aws_api_gateway_method.api_discord.http_method
+  http_method             = "POST"
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
   uri                     = module.lambda_api_discord.fn_invoke_arn
 }
 
-resource "aws_api_gateway_integration_response" "proxy" {
+resource "aws_api_gateway_integration_response" "api_discord" {
   rest_api_id = aws_api_gateway_rest_api.api_discord.id
   resource_id = aws_api_gateway_resource.api_discord.id
   http_method = aws_api_gateway_method.api_discord.http_method
-  status_code = aws_api_gateway_method_response.proxy.status_code
+  status_code = aws_api_gateway_method_response.api_discord.status_code
   response_parameters = {
     "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
     "method.response.header.Access-Control-Allow-Methods" = "'GET,OPTIONS,POST,PUT'",
