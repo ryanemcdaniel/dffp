@@ -8,6 +8,7 @@
     "scripts": {
         "types": "npm run types -ws",
         "build": "dffp build",
+        "coverage": "vitest --coverage",
         "lint": "eslint .",
         "fixlint": "eslint . --fix",
         "sso": "aws sso login --profile Admin",
