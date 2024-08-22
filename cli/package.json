@@ -11,10 +11,13 @@
     },
     "dependencies": {
         "@types/yargs": "17.0.32",
-        "tsx": "4.7.3",
         "yargs": "17.7.2"
     },
     "bin": {
         "dffp": "dffp.ts"
+    },
+    "devDependencies": {
+        "esbuild": "0.23.1",
+        "tsx": "4.17.0"
     }
 }

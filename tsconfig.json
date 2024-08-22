@@ -1,10 +1,19 @@
 {
     "compilerOptions": {
-        "target"          : "esnext",
-        "lib"             : ["esnext"],
-        "types"           : ["node"],
-        "module"          : "esnext",
-        "moduleResolution": "bundler",
-        "strict"          : true
+        "target"                    : "esnext",
+        "lib"                       : ["esnext"],
+        "strict"                    : true,
+        "module"                    : "esnext",
+        "moduleResolution"          : "bundler",
+        "isolatedModules"           : true,
+        "esModuleInterop"           : true,
+        "verbatimModuleSyntax"      : true,
+        "allowArbitraryExtensions"  : true,
+        "allowImportingTsExtensions": true,
+        "baseUrl"                   : "./",
+        "paths"                     : {
+            "#src"  : ["src"],
+            "#src/*": ["src/*"]
+        }
     }
 }
