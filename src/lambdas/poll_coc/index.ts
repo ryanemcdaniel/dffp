@@ -1,34 +1,20 @@
-import {GetParameterCommand} from '@aws-sdk/client-ssm';
-import {coc} from '../client-coc';
-import {ssm} from '../client-ssm';
+import {api_coc} from '#src/lambdas/client-api-coc.ts';
+import {getSecret} from '#src/lambdas/client-aws.ts';
 
-const show = <T>(thing: T): T => {
-    console.log(thing);
-    return thing;
-};
+/**
+ * @init
+ */
+const user = await getSecret('COC_USER');
+const password = await getSecret('COC_PASSWORD');
 
+/**
+ * @invoke
+ */
 export const handler = async () => {
-    const user = await ssm.send(new GetParameterCommand({
-        Name          : 'COC_USER',
-        WithDecryption: true,
-    }));
-    const password = await ssm.send(new GetParameterCommand({
-        Name          : 'COC_PASSWORD',
-        WithDecryption: true,
-    }));
+    await api_coc.login({email: user, password});
 
-    await coc.login({
-        email   : user.Parameter!.Value!,
-        password: password.Parameter!.Value!,
-    });
+    const clan = await api_coc.getClan('#2GR2G0PGG');
 
-    const clan = show(await coc.getClan('#2GR2G0PGG'));
-    const players = show(await clan.fetchMembers());
-
-    const war = show(await coc.getWars('#2GR2G0PGG'));
-    const currentWar = show(await coc.getCurrentWar('#2GR2G0PGG'));
-
-    show(currentWar?.clan.attacks);
-
+    console.log(`login success`);
     console.log(`${clan.name} (${clan.tag})`);
 };

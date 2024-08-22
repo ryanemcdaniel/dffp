@@ -1,54 +1,47 @@
 import type {APIGatewayProxyEventBase, APIGatewayProxyResult} from 'aws-lambda';
-import {tryJson} from '../utils';
-import {GetParameterCommand} from '@aws-sdk/client-ssm';
+import {badImplementation} from '@hapi/boom';
+import type {Boom} from '@hapi/boom';
 import {unauthorized} from '@hapi/boom';
 import {verifyKey} from 'discord-interactions';
-import {ssm} from '../client-ssm';
+import {getSecret} from '#src/lambdas/client-aws.ts';
+import {DISCORD_PING, DISCORD_PONG, respond, tryJson} from '#src/lambdas/api_discord/api-util.ts';
 
-// const isVerified = nacl.sign.detached.verify(
-//     Buffer.from(`${req.headers['X-Signature-Timestamp']}${req.body}`),
-//     Buffer.from(`${req.headers['X-Signature-Ed25519']}`, 'hex'),
-//     Buffer.from(`${discord_public_key.Parameter?.Value}`, 'hex'),
-// );
+/**
+ * @init
+ */
+const discord_public_key = await getSecret('DISCORD_PUBLIC_KEY');
 
+/**
+ * @invoke
+ */
 export const handler = async (req: APIGatewayProxyEventBase<null>): Promise<APIGatewayProxyResult> => {
-    const discord_public_key = await ssm.send(new GetParameterCommand({
-        Name          : 'DISCORD_PUBLIC_KEY',
-        WithDecryption: true,
-    }));
+    try {
+        const signature = req.headers['x-signature-ed25519']!;
+        const timestamp = req.headers['x-signature-timestamp']!;
 
-    const isVerified = await verifyKey(
-        Buffer.from(`${req.body}`),
-        `${req.headers?.['x-signature-ed25519']}`,
-        `${req.headers?.['x-signature-timestamp']}`,
-        `${discord_public_key.Parameter?.Value}`,
-    );
+        const isVerified = await verifyKey(Buffer.from(req.body!), signature, timestamp, discord_public_key);
 
-    if (!isVerified) {
-        const boom = unauthorized('invalid request signature');
-        return {
-            statusCode: boom.output.payload.statusCode,
-            // headers   : boom.output.headers,
-            body      : JSON.stringify({
-                error  : boom.output.payload.error,
-                message: boom.output.payload.message,
-            }),
-        };
+        if (!isVerified) {
+            throw unauthorized('invalid request signature');
+        }
+
+        const body = tryJson(req.body);
+
+        if (body.type === DISCORD_PING.type) {
+            return respond(200, DISCORD_PONG);
+        }
+
+        return respond(200, {});
     }
+    catch (e) {
+        const error = e as Error | Boom;
 
-    const body = tryJson(req.body);
+        console.error(error, req);
 
-    if (body.type === 1) {
-        return {
-            statusCode: 200,
-            body      : JSON.stringify({
-                type: 1,
-            }),
-        };
+        const boom = 'isBoom' in error
+            ? error
+            : badImplementation();
+
+        return respond(boom.output.statusCode, boom.output.payload);
     }
-
-    return {
-        statusCode: 200,
-        body      : JSON.stringify({}),
-    };
 };
