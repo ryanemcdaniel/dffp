@@ -59,13 +59,43 @@ module "lambda_app_discord" {
   acc_id = local.acc_id
   prefix             = local.prefix
   fn_name            = "app_discord"
-  custom_policy_json = data.aws_iam_policy_document.lambda_api_discord.json
+  custom_policy_json = data.aws_iam_policy_document.lambda_app_discord.json
   memory             = 128
   timeout            = 300
   fn_env             = local.lambda_env
 }
 
 data "aws_iam_policy_document" "lambda_app_discord" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+    ]
+    resources = ["arn:aws:logs:*:*:*"]
+  }
+  statement {
+    effect    = "Allow"
+    actions   = ["*"]
+    resources = ["*"]
+  }
+}
+
+#
+# app-discord-deploy
+#
+module "lambda_app_discord_deploy" {
+  source             = "./modules/lambda"
+  acc_id = local.acc_id
+  prefix             = local.prefix
+  fn_name            = "app_discord_deploy"
+  custom_policy_json = data.aws_iam_policy_document.lambda_app_discord_deploy.json
+  memory             = 128
+  timeout            = 300
+  fn_env             = local.lambda_env
+}
+
+data "aws_iam_policy_document" "lambda_app_discord_deploy" {
   statement {
     effect = "Allow"
     actions = [
