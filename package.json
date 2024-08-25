@@ -6,7 +6,7 @@
     "license": "ISC",
     "type": "module",
     "scripts": {
-        "types": "npm run types -ws",
+        "types": "tsc --project tsconfig.json --noEmit",
         "build": "dffp build",
         "coverage": "vitest --coverage",
         "lint": "eslint .",
