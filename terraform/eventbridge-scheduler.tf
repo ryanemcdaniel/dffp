@@ -3,8 +3,8 @@ resource "aws_scheduler_schedule_group" "schedule_group" {
 }
 
 resource "aws_scheduler_schedule" "schedule" {
-  name = "${local.prefix}-schedule"
-    group_name = aws_scheduler_schedule_group.schedule_group.name
+  name       = "${local.prefix}-schedule"
+  group_name = aws_scheduler_schedule_group.schedule_group.name
 
   schedule_expression = "rate(1 minutes)"
 
@@ -26,7 +26,7 @@ data "aws_iam_policy_document" "schedule_role" {
       identifiers = ["sqs.amazonaws.com"]
     }
     principals {
-      type = "AWS"
+      type        = "AWS"
       identifiers = [local.acc_id]
     }
   }

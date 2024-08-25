@@ -1,9 +1,9 @@
 locals {
   lambda_env = {
-    LAMBDA_ENV       = var.env
-    DDB_TRACKING     = aws_dynamodb_table.tracking.name
-    DDB_SNAPSHOTS    = aws_dynamodb_table.snapshots.name
-    NODE_OPTIONS     = "--enable-source-maps"
+    LAMBDA_ENV    = var.env
+    DDB_TRACKING  = aws_dynamodb_table.tracking.name
+    DDB_SNAPSHOTS = aws_dynamodb_table.snapshots.name
+    NODE_OPTIONS  = "--enable-source-maps"
   }
 }
 
@@ -12,7 +12,7 @@ locals {
 #
 module "lambda_api_discord" {
   source             = "./modules/lambda"
-  acc_id = local.acc_id
+  acc_id             = local.acc_id
   prefix             = local.prefix
   fn_name            = "api_discord"
   custom_policy_json = data.aws_iam_policy_document.lambda_api_discord.json
@@ -56,7 +56,7 @@ resource "aws_lambda_permission" "api_discord_post" {
 #
 module "lambda_app_discord" {
   source             = "./modules/lambda"
-  acc_id = local.acc_id
+  acc_id             = local.acc_id
   prefix             = local.prefix
   fn_name            = "app_discord"
   custom_policy_json = data.aws_iam_policy_document.lambda_app_discord.json
@@ -86,7 +86,7 @@ data "aws_iam_policy_document" "lambda_app_discord" {
 #
 module "lambda_app_discord_deploy" {
   source             = "./modules/lambda"
-  acc_id = local.acc_id
+  acc_id             = local.acc_id
   prefix             = local.prefix
   fn_name            = "app_discord_deploy"
   custom_policy_json = data.aws_iam_policy_document.lambda_app_discord_deploy.json
@@ -116,7 +116,7 @@ data "aws_iam_policy_document" "lambda_app_discord_deploy" {
 #
 module "lambda_poll_coc" {
   source             = "./modules/lambda"
-  acc_id = local.acc_id
+  acc_id             = local.acc_id
   prefix             = local.prefix
   fn_name            = "poll_coc"
   custom_policy_json = data.aws_iam_policy_document.lambda_poll_coc.json
@@ -146,7 +146,7 @@ data "aws_iam_policy_document" "lambda_poll_coc" {
 #
 module "lambda_scheduler" {
   source             = "./modules/lambda"
-  acc_id = local.acc_id
+  acc_id             = local.acc_id
   prefix             = local.prefix
   fn_name            = "scheduler"
   custom_policy_json = data.aws_iam_policy_document.lambda_scheduler.json

@@ -9,9 +9,9 @@ resource "aws_sqs_queue" "sqs" {
 data "aws_iam_policy_document" "sqs" {
   count = var.sqs == true ? 1 : 0
   statement {
-    effect = "Allow"
-      actions   = ["sqs:SendMessage"]
-      resources = [aws_sqs_queue.sqs[0].arn]
+    effect    = "Allow"
+    actions   = ["sqs:SendMessage"]
+    resources = [aws_sqs_queue.sqs[0].arn]
     principals {
       type        = "*"
       identifiers = ["*"]

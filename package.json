@@ -11,8 +11,6 @@
         "coverage": "vitest --coverage",
         "lint": "eslint .",
         "fixlint": "eslint . --fix",
-        "sso": ". ./terraform/scripts/sso.sh",
-        "ssoex": ". ./terraform/scripts/sso-export.sh",
         "format": "terraform -chdir=terraform fmt -recursive",
         "init": "terraform -chdir=terraform init",
         "plan": "terraform -chdir=terraform plan -var-file=.qual -out .qual.tfplan",

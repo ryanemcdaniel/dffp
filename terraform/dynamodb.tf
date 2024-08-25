@@ -2,71 +2,71 @@
 # Tracking
 #
 resource "aws_dynamodb_table" "tracking" {
-    name = "${local.prefix}-tracking"
+  name = "${local.prefix}-tracking"
 
-    read_capacity  = 1
-    write_capacity = 1
+  read_capacity  = 1
+  write_capacity = 1
 
-    hash_key  = "type"
+  hash_key = "type"
 
-    attribute {
-        name = "type" # hash_key
-        type = "S"    # CLAN_TAG, PLAYER_TAG, CLAN_WAR
-    }
+  attribute {
+    name = "type" # hash_key
+    type = "S"    # CLAN_TAG, PLAYER_TAG, CLAN_WAR
+  }
 }
 
 data "aws_iam_policy_document" "tracking" {
-    statement {
-        effect = "Allow"
-        actions = ["dynamodb:*"]
-        resources = [aws_dynamodb_table.tracking.arn]
-        principals {
-            type = "AWS"
-            identifiers = [local.acc_id]
-        }
+  statement {
+    effect    = "Allow"
+    actions   = ["dynamodb:*"]
+    resources = [aws_dynamodb_table.tracking.arn]
+    principals {
+      type        = "AWS"
+      identifiers = [local.acc_id]
     }
+  }
 }
 
 resource "aws_dynamodb_resource_policy" "tracking" {
-    resource_arn = aws_dynamodb_table.tracking.arn
-    policy = data.aws_iam_policy_document.tracking.json
+  resource_arn = aws_dynamodb_table.tracking.arn
+  policy       = data.aws_iam_policy_document.tracking.json
 }
 
 #
 # Snapshots
 #
 resource "aws_dynamodb_table" "snapshots" {
-    name = "${local.prefix}-snapshots"
+  name = "${local.prefix}-snapshots"
 
-    read_capacity  = 4
-    write_capacity = 4
+  read_capacity  = 4
+  write_capacity = 4
 
-    hash_key = "id"
-    range_key = "time"
+  hash_key  = "id"
+  range_key = "time"
 
-    attribute {
-        name = "id" # hash_key
-        type = "S"  # CLAN_TAG, PLAYER_TAG, CLAN_WAR
-    }
-    attribute {
-        name = "time" # range_key
-        type = "S"    # ISO timestamp
-    }
+  attribute {
+    name = "id" # hash_key
+    type = "S"  # CLAN_TAG, PLAYER_TAG, CLAN_WAR
+  }
+  attribute {
+    name = "time" # range_key
+    type = "S"    # ISO timestamp
+  }
 }
 
 data "aws_iam_policy_document" "snapshots" {
-    statement {
-        effect = "Allow"
-        actions = ["dynamodb:*"]
-        resources = [aws_dynamodb_table.snapshots.arn]
-        principals {
-            type = "AWS"
-            identifiers = [local.acc_id]
-        }
+  statement {
+    effect    = "Allow"
+    actions   = ["dynamodb:*"]
+    resources = [aws_dynamodb_table.snapshots.arn]
+    principals {
+      type        = "AWS"
+      identifiers = [local.acc_id]
     }
+  }
 }
 
 resource "aws_dynamodb_resource_policy" "snapshots" {
-    resource_arn = aws_dynamodb_table.snapshots.arn
-    policy = data.aws_iam_policy_document.tracking.json
+  resource_arn = aws_dynamodb_table.snapshots.arn
+  policy       = data.aws_iam_policy_document.tracking.json
 }

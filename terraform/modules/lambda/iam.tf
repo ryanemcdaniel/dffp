@@ -12,7 +12,7 @@ data "aws_iam_policy_document" "execution_role_policy" {
       identifiers = ["lambda.amazonaws.com"]
     }
     principals {
-      type = "AWS"
+      type        = "AWS"
       identifiers = [var.acc_id]
     }
   }
