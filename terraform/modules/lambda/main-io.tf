@@ -4,6 +4,9 @@ variable "custom_policy_json" {}
 variable "memory" {}
 variable "timeout" {}
 variable "fn_env" {}
+variable "sqs" { default = false }
+variable "sqs_source_arns" { default = null }
+variable "acc_id" {}
 
 data "archive_file" "source_code" {
   type        = "zip"

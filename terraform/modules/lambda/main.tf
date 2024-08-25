@@ -1,6 +1,6 @@
 locals {
   #   fn_name = replace(var.fn_name, "_", "-")
-  fn_name = var.fn_name
+  fn_name = replace(var.fn_name, "_", "-")
 }
 
 resource "aws_lambda_function" "main" {

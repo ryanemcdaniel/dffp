@@ -20,4 +20,5 @@ provider "aws" {
 
 locals {
   prefix = "${var.env}-${var.service}"
+  acc_id = data.aws_caller_identity.current.account_id
 }

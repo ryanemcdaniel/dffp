@@ -1,18 +1,18 @@
 locals {
   lambda_env = {
-    DFFP_DDB_PLAYER  = ""
-    DFFP_DDB_DISCORD = ""
-    DFFP_DDB_CLAN    = ""
-    DFFP_DDB_CLAN    = ""
+    LAMBDA_ENV       = var.env
+    DDB_TRACKING     = aws_dynamodb_table.tracking.name
+    DDB_SNAPSHOTS    = aws_dynamodb_table.snapshots.name
     NODE_OPTIONS     = "--enable-source-maps"
   }
 }
 
 #
-#
+# api-discord
 #
 module "lambda_api_discord" {
   source             = "./modules/lambda"
+  acc_id = local.acc_id
   prefix             = local.prefix
   fn_name            = "api_discord"
   custom_policy_json = data.aws_iam_policy_document.lambda_api_discord.json
@@ -52,10 +52,41 @@ resource "aws_lambda_permission" "api_discord_post" {
 }
 
 #
+# app-discord
 #
+module "lambda_app_discord" {
+  source             = "./modules/lambda"
+  acc_id = local.acc_id
+  prefix             = local.prefix
+  fn_name            = "app_discord"
+  custom_policy_json = data.aws_iam_policy_document.lambda_api_discord.json
+  memory             = 128
+  timeout            = 300
+  fn_env             = local.lambda_env
+}
+
+data "aws_iam_policy_document" "lambda_app_discord" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+    ]
+    resources = ["arn:aws:logs:*:*:*"]
+  }
+  statement {
+    effect    = "Allow"
+    actions   = ["*"]
+    resources = ["*"]
+  }
+}
+
+#
+# poll-coc
 #
 module "lambda_poll_coc" {
   source             = "./modules/lambda"
+  acc_id = local.acc_id
   prefix             = local.prefix
   fn_name            = "poll_coc"
   custom_policy_json = data.aws_iam_policy_document.lambda_poll_coc.json
@@ -65,6 +96,36 @@ module "lambda_poll_coc" {
 }
 
 data "aws_iam_policy_document" "lambda_poll_coc" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+    ]
+    resources = ["arn:aws:logs:*:*:*"]
+  }
+  statement {
+    effect    = "Allow"
+    actions   = ["*"]
+    resources = ["*"]
+  }
+}
+
+#
+# scheduler
+#
+module "lambda_scheduler" {
+  source             = "./modules/lambda"
+  acc_id = local.acc_id
+  prefix             = local.prefix
+  fn_name            = "scheduler"
+  custom_policy_json = data.aws_iam_policy_document.lambda_scheduler.json
+  memory             = 128
+  timeout            = 300
+  fn_env             = local.lambda_env
+}
+
+data "aws_iam_policy_document" "lambda_scheduler" {
   statement {
     effect = "Allow"
     actions = [
