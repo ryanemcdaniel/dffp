@@ -10,8 +10,8 @@ resource "aws_dynamodb_table" "tracking" {
   hash_key = "type"
 
   attribute {
-    name = "type" # hash_key
-    type = "S"    # CLAN_TAG, PLAYER_TAG, CLAN_WAR
+    name = "type"
+    type = "S"
   }
 }
 
@@ -42,7 +42,7 @@ resource "aws_dynamodb_table" "snapshots" {
   write_capacity = 4
 
   hash_key  = "id"
-  range_key = "time"
+  range_key = "time" # ISO timestamp
 
   attribute {
     name = "id" # hash_key

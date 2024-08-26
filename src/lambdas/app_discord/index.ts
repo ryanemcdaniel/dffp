@@ -1,3 +1,5 @@
+import * as console from 'node:console';
+
 /**
  * @init
  */

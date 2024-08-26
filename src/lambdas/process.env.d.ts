@@ -3,5 +3,6 @@ declare namespace NodeJS {
         LAMBDA_ENV   : string;
         DDB_TRACKING : string;
         DDB_SNAPSHOTS: string;
+        SQS_POLL     : string;
     }
 }

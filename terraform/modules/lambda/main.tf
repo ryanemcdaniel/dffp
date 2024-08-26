@@ -17,11 +17,30 @@ resource "aws_lambda_function" "main" {
   timeout       = var.timeout
 
   environment {
-    variables = var.fn_env
+    variables = merge(
+      {
+        NODE_OPTIONS = "--enable-source-maps"
+      },
+      var.fn_env
+    )
   }
   logging_config {
     log_format = "Text"
     #     application_log_level = "ERROR"
     #     system_log_level      = "INFO"
   }
+}
+
+resource "aws_lambda_permission" "sqs" {
+  count         = var.sqs == true ? 1 : 0
+  function_name = aws_lambda_function.main.arn
+  action        = "lambda:InvokeFunction"
+  principal     = "sqs.amazonaws.com"
+  source_arn    = aws_sqs_queue.sqs[0].arn
+}
+
+resource "aws_lambda_event_source_mapping" "sqs" {
+  count            = var.sqs == true ? 1 : 0
+  function_name    = aws_lambda_function.main.arn
+  event_source_arn = aws_sqs_queue.sqs[0].arn
 }

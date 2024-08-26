@@ -3,7 +3,6 @@ locals {
     LAMBDA_ENV    = var.env
     DDB_TRACKING  = aws_dynamodb_table.tracking.name
     DDB_SNAPSHOTS = aws_dynamodb_table.snapshots.name
-    NODE_OPTIONS  = "--enable-source-maps"
   }
 }
 
@@ -63,6 +62,8 @@ module "lambda_app_discord" {
   memory             = 128
   timeout            = 300
   fn_env             = local.lambda_env
+  sqs                = true
+  sqs_source_arns    = [module.lambda_api_discord.fn_arn]
 }
 
 data "aws_iam_policy_document" "lambda_app_discord" {
@@ -111,6 +112,16 @@ data "aws_iam_policy_document" "lambda_app_discord_deploy" {
   }
 }
 
+resource "aws_lambda_invocation" "lambda_app_discord_deploy" {
+  function_name = module.lambda_app_discord_deploy.fn_name
+  input         = jsonencode({})
+  triggers = {
+    redeployment = jsonencode([
+      module.lambda_app_discord_deploy.fn_src_hash
+    ])
+  }
+}
+
 #
 # poll-coc
 #
@@ -123,6 +134,8 @@ module "lambda_poll_coc" {
   memory             = 128
   timeout            = 300
   fn_env             = local.lambda_env
+  sqs                = true
+  sqs_source_arns    = [module.lambda_scheduler.fn_arn]
 }
 
 data "aws_iam_policy_document" "lambda_poll_coc" {
@@ -152,7 +165,9 @@ module "lambda_scheduler" {
   custom_policy_json = data.aws_iam_policy_document.lambda_scheduler.json
   memory             = 128
   timeout            = 300
-  fn_env             = local.lambda_env
+  fn_env = merge({
+    SQS_POLL = module.lambda_poll_coc.fn_sqs_url
+  }, local.lambda_env)
 }
 
 data "aws_iam_policy_document" "lambda_scheduler" {
@@ -164,9 +179,11 @@ data "aws_iam_policy_document" "lambda_scheduler" {
     ]
     resources = ["arn:aws:logs:*:*:*"]
   }
+  // todo IAM security
   statement {
     effect    = "Allow"
     actions   = ["*"]
     resources = ["*"]
   }
 }
+

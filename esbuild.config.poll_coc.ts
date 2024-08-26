@@ -2,22 +2,23 @@ import type {BuildOptions} from 'esbuild';
 import {readdir} from 'node:fs/promises';
 import {resolve} from 'node:path';
 
-const lambdas = (await readdir('src', {withFileTypes: true, recursive: true}))
+const [poll_coc] = (await readdir('src', {withFileTypes: true, recursive: true}))
     .filter((l) => l.name === 'index.ts')
-    .map((l) => resolve(l.parentPath, l.name));
+    .map((l) => resolve(l.parentPath, l.name))
+    .filter((l) => l.includes('poll_coc'));
 
 export default {
 
-    entryPoints   : lambdas,
-    outdir        : 'dist',
+    entryPoints   : [poll_coc],
+    outdir        : 'dist/poll_coc',
     logLevel      : 'info',
     allowOverwrite: true,
 
     platform: 'node',
     target  : 'node20',
 
-    format      : 'esm',
-    outExtension: {'.js': '.mjs'},
+    format: 'cjs',
+    // outExtension: {'.js': '.mjs'},
     // mainFields  : ['main', 'module'],
     // conditions  : ['import'],
 

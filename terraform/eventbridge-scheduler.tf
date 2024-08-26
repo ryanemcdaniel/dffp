@@ -6,13 +6,13 @@ resource "aws_scheduler_schedule" "schedule" {
   name       = "${local.prefix}-schedule"
   group_name = aws_scheduler_schedule_group.schedule_group.name
 
-  schedule_expression = "rate(1 minutes)"
+  schedule_expression = "rate(2 minutes)"
 
   flexible_time_window {
     mode = "OFF"
   }
   target {
-    arn      = aws_cloudwatch_event_bus.bus.arn
+    arn      = module.lambda_scheduler.fn_arn
     role_arn = aws_iam_role.schedule_role.arn
   }
 }
@@ -23,7 +23,7 @@ data "aws_iam_policy_document" "schedule_role" {
     actions = ["sts:AssumeRole"]
     principals {
       type        = "Service"
-      identifiers = ["sqs.amazonaws.com"]
+      identifiers = ["scheduler.amazonaws.com"]
     }
     principals {
       type        = "AWS"
@@ -41,8 +41,8 @@ resource "aws_iam_role" "schedule_role" {
 data "aws_iam_policy_document" "schedule_policy" {
   statement {
     effect    = "Allow"
-    actions   = ["events:PutEvents"]
-    resources = [aws_cloudwatch_event_bus.bus.arn]
+    actions   = ["*"]
+    resources = [module.lambda_scheduler.fn_arn]
   }
 }
 

@@ -25,3 +25,11 @@ output "fn_arn" {
 output "fn_invoke_arn" {
   value = aws_lambda_function.main.invoke_arn
 }
+
+output "fn_sqs_url" {
+  value = try(aws_sqs_queue.sqs[0].url, null)
+}
+
+output "fn_src_hash" {
+  value = data.archive_file.source_code.output_sha256
+}

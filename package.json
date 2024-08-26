@@ -7,7 +7,7 @@
     "type": "module",
     "scripts": {
         "types": "tsc --project tsconfig.json --noEmit",
-        "build": "dffp build",
+        "build": "dffp build && dffp build -c esbuild.config.poll_coc.ts",
         "coverage": "vitest --coverage",
         "lint": "eslint .",
         "fixlint": "eslint . --fix",

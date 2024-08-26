@@ -3,7 +3,7 @@ import {badRequest} from '@hapi/boom';
 export const DISCORD_PING = {type: 1};
 export const DISCORD_PONG = {type: 1};
 
-export const tryJson = (body?: string | null) => {
+export const tryBody = (body?: string | null) => {
     try {
         if (!body) {
             return {};
