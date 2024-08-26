@@ -1,25 +1,51 @@
-import {aws_ddb} from '#src/lambdas/client-aws-ddb.ts';
-import {DFFP_CLANS, DFFP_PLAYERS, SERVER_ID} from '#src/lambdas/temp-constants.ts';
-import * as console from 'node:console';
+import {getSecret} from '#src/lambdas/client-aws.ts';
+import {authDiscord, callDiscord} from '#src/api/discord.ts';
+import type {APIApplicationCommand, RESTPostAPIApplicationCommandsJSONBody} from 'discord-api-types/v10';
+import {ApplicationCommandType, ApplicationCommandOptionType} from 'discord-api-types/v10';
 
 /**
  * @init
  */
+const discord_public_key = await getSecret('DISCORD_PUBLIC_KEY');
+const discord_app_id = await getSecret('DISCORD_APP_ID');
+const discord_client_id = await getSecret('DISCORD_CLIENT_ID');
+const discord_client_secret = await getSecret('DISCORD_CLIENT_SECRET');
+
+const commands = [
+    {
+        type       : ApplicationCommandType.ChatInput,
+        name       : 'war-opponent',
+        description: 'TBD',
+    },
+    {
+        type       : ApplicationCommandType.ChatInput,
+        name       : 'war-links',
+        description: 'get player profile links of enemy top #10 for scouting',
+        options    : [{
+            type       : ApplicationCommandOptionType.String,
+            name       : 'clan',
+            description: 'tag or alias (ex. #2GR2G0PGG, main, labs, ctd, ...)',
+            required   : true,
+        }],
+    },
+] as const satisfies RESTPostAPIApplicationCommandsJSONBody[];
 
 /**
  * @invoke
  */
 export const handler = async () => {
-    await aws_ddb.put({
-        TableName: process.env.DDB_TRACKING,
-        Item     : {
-            type   : SERVER_ID,
-            clans  : DFFP_CLANS,
-            players: DFFP_PLAYERS,
-        },
-    });
+    const bearer = await authDiscord(
+        discord_client_id,
+        discord_client_secret,
+        'applications.commands.update',
+    );
 
-    // todo register slash commands
-
-    console.info('deploy successful');
+    for (const cmd of commands) {
+        await callDiscord({
+            method  : 'POST',
+            path    : `/applications/${discord_app_id}/commands`,
+            bearer  : bearer.access_token,
+            jsonBody: cmd,
+        });
+    }
 };

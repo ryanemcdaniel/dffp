@@ -4,12 +4,28 @@ import type {Boom} from '@hapi/boom';
 import {unauthorized} from '@hapi/boom';
 import {verifyKey} from 'discord-interactions';
 import {getSecret} from '#src/lambdas/client-aws.ts';
-import {DISCORD_PING, DISCORD_PONG, respond, tryBody} from '#src/lambdas/api_discord/api-util.ts';
+import {respond, tryBody} from '#src/lambdas/api_discord/api-util.ts';
+import * as console from 'node:console';
+import type {APIInteraction} from 'discord-api-types/v10';
+import {InteractionType} from 'discord-api-types/v10';
+import {pingPong} from '#src/lambdas/api_discord/handlers/ping-pong.ts';
+import {applicationCommand} from '#src/lambdas/api_discord/handlers/application-command.ts';
+import {autocomplete} from '#src/lambdas/api_discord/handlers/autocomplete.ts';
+import {modalSubmit} from '#src/lambdas/api_discord/handlers/modal-submit.ts';
+import {messageComponent} from '#src/lambdas/api_discord/handlers/message-component.ts';
 
 /**
  * @init
  */
 const discord_public_key = await getSecret('DISCORD_PUBLIC_KEY');
+
+const router = {
+    [InteractionType.Ping]                          : pingPong,
+    [InteractionType.ApplicationCommand]            : applicationCommand,
+    [InteractionType.ApplicationCommandAutocomplete]: autocomplete,
+    [InteractionType.ModalSubmit]                   : modalSubmit,
+    [InteractionType.MessageComponent]              : messageComponent,
+} as const;
 
 /**
  * @invoke
@@ -25,13 +41,9 @@ export const handler = async (req: APIGatewayProxyEventBase<null>): Promise<APIG
             throw unauthorized('invalid request signature');
         }
 
-        const body = tryBody(req.body);
+        const body = tryBody<APIInteraction>(req.body);
 
-        if (body.type === DISCORD_PING.type) {
-            return respond(200, DISCORD_PONG);
-        }
-
-        return respond(200, {});
+        return await router[body.type](body as never);
     }
     catch (e) {
         const error = e as Error | Boom;
@@ -42,6 +54,9 @@ export const handler = async (req: APIGatewayProxyEventBase<null>): Promise<APIG
             ? error
             : badImplementation();
 
-        return respond(boom.output.statusCode, boom.output.payload);
+        return respond({
+            status: boom.output.statusCode,
+            body  : boom.output.payload,
+        });
     }
 };

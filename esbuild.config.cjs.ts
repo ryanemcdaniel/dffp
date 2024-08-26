@@ -2,15 +2,16 @@ import type {BuildOptions} from 'esbuild';
 import {readdir} from 'node:fs/promises';
 import {resolve} from 'node:path';
 
-const [poll_coc] = (await readdir('src', {withFileTypes: true, recursive: true}))
+const lambdas = (await readdir('src', {withFileTypes: true, recursive: true}))
     .filter((l) => l.name === 'index.ts')
     .map((l) => resolve(l.parentPath, l.name))
-    .filter((l) => l.includes('poll_coc'));
+    .filter((l) => l.includes('poll_coc') || l.includes('app_discord'))
+    .filter((l) => !l.includes('deploy'));
 
 export default {
 
-    entryPoints   : [poll_coc],
-    outdir        : 'dist/poll_coc',
+    entryPoints   : lambdas,
+    outdir        : 'dist',
     logLevel      : 'info',
     allowOverwrite: true,
 

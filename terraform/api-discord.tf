@@ -26,6 +26,7 @@ resource "aws_api_gateway_deployment" "api_discord" {
       aws_api_gateway_method.api_discord_get.id,
       aws_api_gateway_method_response.api_discord_get.id,
       aws_api_gateway_integration.api_discord_get.id,
+      aws_api_gateway_integration.api_discord_get.http_method,
 
       aws_api_gateway_method.api_discord_post.id,
       aws_api_gateway_integration.api_discord_post.id,
