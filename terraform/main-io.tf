@@ -6,6 +6,7 @@ variable "coc_ssm_password" {}
 variable "discord_url" {}
 variable "discord_ssm_token" {}
 
+data "aws_organizations_organization" "current" {}
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 

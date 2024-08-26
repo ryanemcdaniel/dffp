@@ -1,20 +1,42 @@
 import {api_coc} from '#src/lambdas/client-api-coc.ts';
 import {getSecret} from '#src/lambdas/client-aws.ts';
+import type {PollCocEvent, PollRecord} from '#src/lambdas/types-events.ts';
+import {tryJson} from '#src/lambdas/util.ts';
+import {pollClans} from '#src/lambdas/poll_coc/polls/clans.ts';
+import {pollPlayers} from '#src/lambdas/poll_coc/polls/players.ts';
 
 /**
  * @init
  */
-const user = await getSecret('COC_USER');
-const password = await getSecret('COC_PASSWORD');
+const init = (async () => {
+    const email = await getSecret('COC_USER');
+    const password = await getSecret('COC_PASSWORD');
+
+    await api_coc.login({
+        email,
+        password,
+        keyCount: 1,
+        keyName : `${process.env.LAMBDA_ENV}-poll-coc`,
+    });
+
+    const dummy = '';
+})();
 
 /**
  * @invoke
  */
-export const handler = async () => {
-    await api_coc.login({email: user, password});
+export const handler = async (event: PollCocEvent) => {
+    await init;
 
-    const clan = await api_coc.getClan('#2GR2G0PGG');
+    const allTags = event.Records.reduce<PollRecord['body']>((acc, record) => {
+        const json = tryJson(record.body);
 
-    console.log(`login success`);
-    console.log(`${clan.name} (${clan.tag})`);
+        acc.clans.push(...json.clans);
+        acc.players.push(...json.players);
+
+        return acc;
+    }, {clans: [], players: []});
+
+    await pollClans(allTags.clans);
+    await pollPlayers(allTags.players);
 };

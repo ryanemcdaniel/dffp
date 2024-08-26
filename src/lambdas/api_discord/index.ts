@@ -4,7 +4,7 @@ import type {Boom} from '@hapi/boom';
 import {unauthorized} from '@hapi/boom';
 import {verifyKey} from 'discord-interactions';
 import {getSecret} from '#src/lambdas/client-aws.ts';
-import {DISCORD_PING, DISCORD_PONG, respond, tryJson} from '#src/lambdas/api_discord/api-util.ts';
+import {DISCORD_PING, DISCORD_PONG, respond, tryBody} from '#src/lambdas/api_discord/api-util.ts';
 
 /**
  * @init
@@ -25,7 +25,7 @@ export const handler = async (req: APIGatewayProxyEventBase<null>): Promise<APIG
             throw unauthorized('invalid request signature');
         }
 
-        const body = tryJson(req.body);
+        const body = tryBody(req.body);
 
         if (body.type === DISCORD_PING.type) {
             return respond(200, DISCORD_PONG);

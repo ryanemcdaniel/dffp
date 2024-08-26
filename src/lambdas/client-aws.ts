@@ -1,4 +1,7 @@
 import {GetParameterCommand, SSMClient} from '@aws-sdk/client-ssm';
+import {DynamoDBClient} from '@aws-sdk/client-dynamodb';
+import {DynamoDBDocumentClient} from '@aws-sdk/lib-dynamodb';
+import {SQS} from '@aws-sdk/client-sqs';
 
 export const aws_ssm = new SSMClient({});
 
@@ -12,3 +15,5 @@ export const getSecret = async (key: string) => {
 
     return resp.Parameter!.Value!;
 };
+
+export const aws_sqs = new SQS({});
