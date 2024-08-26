@@ -93,7 +93,9 @@ export const bindApiCall = (baseUrl: string) =>
             }
         }
 
-        ops.bearer && req.headers.set('Authorization', `Bearer ${ops.bearer}`);
+        if (ops.bearer) {
+            req.headers.set('Authorization', `Bearer ${ops.bearer}`);
+        }
 
         if (ops.jsonBody) {
             req.headers.set('Content-Type', 'application/json');

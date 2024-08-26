@@ -1,50 +1,25 @@
-import {getSecret} from '#src/lambdas/client-aws.ts';
-import {authDiscord, callDiscord} from '#src/api/discord.ts';
-import type {APIApplicationCommand, RESTPostAPIApplicationCommandsJSONBody} from 'discord-api-types/v10';
-import {ApplicationCommandType, ApplicationCommandOptionType} from 'discord-api-types/v10';
+import type {RESTPostAPIApplicationCommandsJSONBody} from 'discord-api-types/v10';
+import {authDiscord, callDiscord, initDiscord} from '#src/discord/api/base.ts';
+import {COMMANDS} from '#src/discord/commands.ts';
 
 /**
  * @init
  */
-const discord_public_key = await getSecret('DISCORD_PUBLIC_KEY');
-const discord_app_id = await getSecret('DISCORD_APP_ID');
-const discord_client_id = await getSecret('DISCORD_CLIENT_ID');
-const discord_client_secret = await getSecret('DISCORD_CLIENT_SECRET');
+const DEPLOY_COMMANDS = COMMANDS.map((cmd) => cmd.deploy) satisfies RESTPostAPIApplicationCommandsJSONBody[];
 
-const commands = [
-    {
-        type       : ApplicationCommandType.ChatInput,
-        name       : 'war-opponent',
-        description: 'TBD',
-    },
-    {
-        type       : ApplicationCommandType.ChatInput,
-        name       : 'war-links',
-        description: 'get player profile links of enemy top #10 for scouting',
-        options    : [{
-            type       : ApplicationCommandOptionType.String,
-            name       : 'clan',
-            description: 'tag or alias (ex. #2GR2G0PGG, main, labs, ctd, ...)',
-            required   : true,
-        }],
-    },
-] as const satisfies RESTPostAPIApplicationCommandsJSONBody[];
+const discord = await initDiscord();
 
 /**
  * @invoke
  */
 export const handler = async () => {
-    const bearer = await authDiscord(
-        discord_client_id,
-        discord_client_secret,
-        'applications.commands.update',
-    );
+    const bearer = await authDiscord(discord, 'applications.commands.update');
 
-    for (const cmd of commands) {
+    for (const cmd of DEPLOY_COMMANDS) {
         await callDiscord({
             method  : 'POST',
-            path    : `/applications/${discord_app_id}/commands`,
-            bearer  : bearer.access_token,
+            path    : `/applications/${discord.app_id}/commands`,
+            bearer  : bearer.contents.access_token,
             jsonBody: cmd,
         });
     }

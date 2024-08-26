@@ -4,23 +4,19 @@ import {getSecret} from '#src/lambdas/client-aws.ts';
 
 export const callDiscord = bindApiCall('https://discord.com/api/v10');
 
-export const authDiscord = async (clientId: string, clientSecret: string, scope: string) => {
-    const resp = await callDiscord<{access_token: string}>({
-        method : 'POST',
-        path   : '/oauth2/token',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-            grant_type   : 'client_credentials',
-            scope        : scope,
-            client_id    : clientId,
-            client_secret: clientSecret,
-        }),
-    });
-
-    return resp.contents;
-};
+export const authDiscord = async (discord: DiscordCtx, scope: string) => await callDiscord<{access_token: string}>({
+    method : 'POST',
+    path   : '/oauth2/token',
+    headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: new URLSearchParams({
+        grant_type   : 'client_credentials',
+        scope        : scope,
+        client_id    : discord.client_id,
+        client_secret: discord.client_secret,
+    }),
+});
 
 export const initDiscord = async () => {
     const discord_public_key = await getSecret('DISCORD_PUBLIC_KEY');
@@ -35,3 +31,5 @@ export const initDiscord = async () => {
         client_secret: discord_client_secret,
     };
 };
+
+export type DiscordCtx = Awaited<ReturnType<typeof initDiscord>>;
