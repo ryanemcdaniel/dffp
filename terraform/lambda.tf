@@ -17,7 +17,9 @@ module "lambda_api_discord" {
   custom_policy_json = data.aws_iam_policy_document.lambda_api_discord.json
   memory             = 128
   timeout            = 300
-  fn_env             = local.lambda_env
+  fn_env             = merge(local.lambda_env, {
+    SQS_APP_DISCORD = module.lambda_app_discord.fn_sqs_url
+  })
 }
 
 data "aws_iam_policy_document" "lambda_api_discord" {
@@ -165,9 +167,9 @@ module "lambda_scheduler" {
   custom_policy_json = data.aws_iam_policy_document.lambda_scheduler.json
   memory             = 128
   timeout            = 300
-  fn_env = merge({
+  fn_env = merge(local.lambda_env, {
     SQS_POLL = module.lambda_poll_coc.fn_sqs_url
-  }, local.lambda_env)
+  })
 }
 
 data "aws_iam_policy_document" "lambda_scheduler" {

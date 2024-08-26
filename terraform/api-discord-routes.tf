@@ -56,6 +56,7 @@ resource "aws_api_gateway_method_response" "api_discord_get" {
   status_code = "200"
   response_parameters = {
     "method.response.header.Access-Control-Allow-Origin" = true
+    "method.response.header.Access-Control-Allow-Methods" = true
   }
 }
 

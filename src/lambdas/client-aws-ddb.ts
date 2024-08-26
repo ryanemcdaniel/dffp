@@ -4,9 +4,9 @@ import {DynamoDBClient} from '@aws-sdk/client-dynamodb';
 export const aws_ddb = DynamoDBDocument.from(new DynamoDBClient({}));
 
 interface ServerTrackingRecord {
-    type        : string; // hash key
-    tags_clans  : string[];
-    tags_players: string[];
+    type   : string; // hash key
+    clans  : string[];
+    players: string[];
 }
 
 export const getServerTrackingRecord = async (serverId: string) => {

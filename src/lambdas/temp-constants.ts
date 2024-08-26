@@ -3,7 +3,22 @@ export const SERVER_ID = '1196596661804351519';
 export const DFFP_CLANS = [
     '#2GR2G0PGG',
     '#8GCC0RPL8',
+    '#2GYYRUULL',
+    '#2YVCYUCCP',
+    '#2QUP9UPGY',
 ];
+
+export const DFFP_CLANS_ALIAS = {
+    dffp          : '#2GR2G0PGG',
+    main          : '#2GR2G0PGG',
+    labs          : '#2GYYRUULL',
+    dffplabs      : '#2GYYRUULL',
+    ctd           : '#2YVCYUCCP',
+    ctdummy       : '#2YVCYUCCP',
+    dummy         : '#2YVCYUCCP',
+    clashtestdummy: '#2YVCYUCCP',
+    ezcwl         : '#2QUP9UPGY',
+};
 
 export const DFFP_PLAYERS = [
     '#G9JP8PCY9',
