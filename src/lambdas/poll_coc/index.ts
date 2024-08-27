@@ -1,4 +1,4 @@
-import {api_coc} from '#src/lambdas/client-api-coc.ts';
+import {api_coc, init_api_coc} from '#src/lambdas/client-api-coc.ts';
 import {getSecret} from '#src/lambdas/client-aws.ts';
 import type {PollCocEvent, PollRecord} from '#src/lambdas/types-events.ts';
 import {tryJson} from '#src/lambdas/util.ts';
@@ -12,14 +12,13 @@ const init = (async () => {
     const email = await getSecret('COC_USER');
     const password = await getSecret('COC_PASSWORD');
 
+    await init_api_coc();
     await api_coc.login({
         email,
         password,
         keyCount: 1,
         keyName : `${process.env.LAMBDA_ENV}-poll-coc`,
     });
-
-    const dummy = '';
 })();
 
 /**

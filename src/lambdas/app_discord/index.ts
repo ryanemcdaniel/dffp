@@ -1,34 +1,32 @@
 import {getSecret} from '#src/lambdas/client-aws.ts';
 import {tryJson} from '#src/lambdas/util.ts';
 import {InteractionResponseType} from 'discord-interactions';
-import {api_coc} from '#src/lambdas/client-api-coc.ts';
-import console from 'node:console';
+import {api_coc, init_api_coc} from '#src/lambdas/client-api-coc.ts';
 import type {APIChatInputApplicationCommandInteraction} from 'discord-api-types/v10';
 import {show} from '../../../util.ts';
 import {authDiscord, callDiscord, initDiscord} from '#src/discord/api/base.ts';
-import {COMMANDS} from '#src/discord/commands.ts';
 import type {SQSRecord} from 'aws-lambda';
+import {WAR_LINKS} from '#src/discord/commands/war-links.ts';
+import {WAR_OPPONENT} from '#src/discord/commands/war-opponent.ts';
+import {logErr} from '#src/discord/api/post-channel-message.ts';
 
 /**
  * @init
  */
-const HANDLE_COMMANDS = COMMANDS.reduce(
-    (acc, cmd) => {
-        acc[cmd.deploy.name] = cmd.handle;
-        return acc;
-    },
-    // eslint-disable-next-line @typescript-eslint/prefer-reduce-type-parameter
-    {} as {[N in typeof COMMANDS[number]['deploy']['name']]: Extract<typeof COMMANDS[number], {deploy: {name: N}}>['handle']},
-);
+const HANDLE_COMMANDS = {
+    [WAR_LINKS.deploy.name]   : WAR_LINKS.handle,
+    [WAR_OPPONENT.deploy.name]: WAR_OPPONENT.handle,
+} as const;
 
 type AppDiscordEvent = {
-    Records: (Omit<SQSRecord, 'body'> & {body: APIChatInputApplicationCommandInteraction & {data: {name: typeof COMMANDS[number]['deploy']['name']}}})[];
+    Records: (Omit<SQSRecord, 'body'> & {body: APIChatInputApplicationCommandInteraction})[];
 };
 
 const init = (async () => {
     const email = await getSecret('COC_USER');
     const password = await getSecret('COC_PASSWORD');
 
+    await init_api_coc();
     await api_coc.login({
         email,
         password,
@@ -53,14 +51,14 @@ export const handler = async (event: AppDiscordEvent) => {
 
         show(body);
 
-        auth = await authDiscord(discord.client_id, discord.client_secret, 'identify connections');
+        auth = await authDiscord(discord, 'identify connections');
 
         await HANDLE_COMMANDS[body.data.name](
             {
                 ...discord,
                 auth_token: auth.contents.access_token,
             },
-            body.data,
+            body,
             body.data.options?.reduce((acc, op) => {
                 acc[op.name] = op;
                 return acc;
@@ -68,29 +66,16 @@ export const handler = async (event: AppDiscordEvent) => {
         );
     }
     catch (e) {
-        console.error(e);
+        await logErr(discord, e);
 
-        if ('isBoom' in e) {
-            await callDiscord({
-                method  : 'PATCH',
-                path    : `/webhooks/${discord.app_id}/${body.token}/messages/@original`,
-                bearer  : auth.contents.access_token,
-                jsonBody: {
-                    type   : InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-                    content: `error: ${e.output.payload.error}\nmessage: ${e.output.payload.message}`,
-                },
-            });
-        }
-        else {
-            await callDiscord({
-                method  : 'PATCH',
-                path    : `/webhooks/${discord.app_id}/${body.token}/messages/@original`,
-                bearer  : auth.contents.access_token,
-                jsonBody: {
-                    type   : InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-                    content: e.message,
-                },
-            });
-        }
+        await callDiscord({
+            method  : 'PATCH',
+            path    : `/webhooks/${discord.app_id}/${body.token}/messages/@original`,
+            bearer  : auth.contents.access_token,
+            jsonBody: {
+                type   : InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+                content: 'failure, check server logs',
+            },
+        });
     }
 };

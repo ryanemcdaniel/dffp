@@ -31,5 +31,4 @@ export const initDiscord = async () => {
         client_secret: discord_client_secret,
     };
 };
-
 export type DiscordCtx = Awaited<ReturnType<typeof initDiscord>>;

@@ -1,18 +1,16 @@
 import {badRequest} from '@hapi/boom';
+import {parse} from '@hapi/bourne';
 
-export const DISCORD_PING = {type: 1};
-export const DISCORD_PONG = {type: 1};
-
-export const tryBody = <T>(body?: string | null): T => {
+export const tryBody = <T>(body?: string | null | T): T => {
     try {
         if (!body) {
-            throw badRequest('unparsable json');
+            throw badRequest('no body');
         }
 
-        return JSON.parse(body) as T;
+        return parse(body as string) as T;
     }
     catch (e) {
-        throw badRequest('unparsable json');
+        throw badRequest(e as Error);
     }
 };
 

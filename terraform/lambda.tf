@@ -15,7 +15,7 @@ module "lambda_api_discord" {
   prefix             = local.prefix
   fn_name            = "api_discord"
   custom_policy_json = data.aws_iam_policy_document.lambda_api_discord.json
-  memory             = 128
+  memory             = 256
   timeout            = 300
   fn_env             = merge(local.lambda_env, {
     SQS_APP_DISCORD = module.lambda_app_discord.fn_sqs_url
@@ -61,7 +61,7 @@ module "lambda_app_discord" {
   prefix             = local.prefix
   fn_name            = "app_discord"
   custom_policy_json = data.aws_iam_policy_document.lambda_app_discord.json
-  memory             = 128
+  memory             = 512
   timeout            = 300
   fn_env             = local.lambda_env
   sqs                = true
@@ -93,7 +93,7 @@ module "lambda_app_discord_deploy" {
   prefix             = local.prefix
   fn_name            = "app_discord_deploy"
   custom_policy_json = data.aws_iam_policy_document.lambda_app_discord_deploy.json
-  memory             = 128
+  memory             = 512
   timeout            = 300
   fn_env             = local.lambda_env
 }
@@ -133,7 +133,7 @@ module "lambda_poll_coc" {
   prefix             = local.prefix
   fn_name            = "poll_coc"
   custom_policy_json = data.aws_iam_policy_document.lambda_poll_coc.json
-  memory             = 128
+  memory             = 256
   timeout            = 300
   fn_env             = local.lambda_env
   sqs                = true
@@ -165,7 +165,7 @@ module "lambda_scheduler" {
   prefix             = local.prefix
   fn_name            = "scheduler"
   custom_policy_json = data.aws_iam_policy_document.lambda_scheduler.json
-  memory             = 128
+  memory             = 256
   timeout            = 300
   fn_env = merge(local.lambda_env, {
     SQS_POLL = module.lambda_poll_coc.fn_sqs_url

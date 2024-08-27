@@ -1,11 +1,15 @@
-import type {RESTPostAPIApplicationCommandsJSONBody} from 'discord-api-types/v10';
 import {authDiscord, callDiscord, initDiscord} from '#src/discord/api/base.ts';
-import {COMMANDS} from '#src/discord/commands.ts';
+import {WAR_LINKS_SPEC} from '#src/discord/commands/war-links.ts';
+import {WAR_OPPONENT_SPEC} from '#src/discord/commands/war-opponent.ts';
+import {logErr} from '#src/discord/api/post-channel-message.ts';
 
 /**
  * @init
  */
-const DEPLOY_COMMANDS = COMMANDS.map((cmd) => cmd.deploy) satisfies RESTPostAPIApplicationCommandsJSONBody[];
+const DEPLOY_COMMANDS = [
+    WAR_LINKS_SPEC,
+    WAR_OPPONENT_SPEC,
+];
 
 const discord = await initDiscord();
 
@@ -13,14 +17,19 @@ const discord = await initDiscord();
  * @invoke
  */
 export const handler = async () => {
-    const bearer = await authDiscord(discord, 'applications.commands.update');
+    try {
+        const bearer = await authDiscord(discord, 'applications.commands.update');
 
-    for (const cmd of DEPLOY_COMMANDS) {
-        await callDiscord({
-            method  : 'POST',
-            path    : `/applications/${discord.app_id}/commands`,
-            bearer  : bearer.contents.access_token,
-            jsonBody: cmd,
-        });
+        for (const cmd of DEPLOY_COMMANDS) {
+            await callDiscord({
+                method  : 'POST',
+                path    : `/applications/${discord.app_id}/commands`,
+                bearer  : bearer.contents.access_token,
+                jsonBody: cmd,
+            });
+        }
+    }
+    catch (e) {
+        await logErr(discord, e);
     }
 };

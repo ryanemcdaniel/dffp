@@ -8,7 +8,7 @@ import {mapWars} from '#src/clashking/map-wars.ts';
 import {callDiscord} from '#src/discord/api/base.ts';
 import {patchOriginal} from '#src/discord/api/patch-original.ts';
 
-const spec = {
+export const WAR_OPPONENT_SPEC = {
     type       : ApplicationCommandType.ChatInput,
     name       : 'war-opponent',
     description: 'TBD',
@@ -22,14 +22,13 @@ const spec = {
     ] as const,
 } as const satisfies SpecInput;
 
-export const WAR_OPPONENT = buildDiscordCommand2(spec, async (discord, interaction, ops) => {
+export const WAR_OPPONENT = buildDiscordCommand2(WAR_OPPONENT_SPEC, async (discord, interaction, ops) => {
+    const clanTag = aliasClan(ops.clan.value);
+    const currentWar = await api_coc.getCurrentWar({clanTag, round: 'CurrentRound'});
+
     if (interaction.member?.user.id !== '644290645350940692') {
         throw unauthorized('Unauthorized');
     }
-
-    const clanTag = aliasClan(ops.clan.value);
-
-    const currentWar = await api_coc.getCurrentWar({clanTag, round: 'CurrentRound'});
 
     if (!currentWar || currentWar.isWarEnded) {
         throw notFound('war data unavailable');
@@ -37,11 +36,11 @@ export const WAR_OPPONENT = buildDiscordCommand2(spec, async (discord, interacti
 
     const previousWars = await ck_getPreviousWars(currentWar.opponent.tag);
 
-    const [stats] = mapWars(currentWar.opponent.tag, [currentWar, ...previousWars.contents]);
+    const stats = mapWars();
 
     await callDiscord(patchOriginal(
         discord,
         interaction,
-        stats.mirror_th_diff.join('\n'),
+        'unfinished',
     ));
 });

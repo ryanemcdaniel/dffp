@@ -46,7 +46,9 @@ type CmdHandler<T extends SpecInput> = (
     discord: DiscordCtx,
     interaction: APIApplicationCommandInteractionWrapper<Replace<APIChatInputApplicationCommandInteractionData, 'options', GetOption<T['options'][number]['type']>[]>>,
     ops: {
-        [N in T['options'][number]['name']]: GetOption<Extract<T['options'][number], {name: N}>['type']>;
+        [N in T['options'][number]['name']]: Extract<T['options'][number], {name: N}>['required'] extends true
+            ? GetOption<Extract<T['options'][number], {name: N}>['type']>
+            : GetOption<Extract<T['options'][number], {name: N}>['type']> | undefined
     }
 ) => Promise<void>;
 

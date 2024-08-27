@@ -8,6 +8,7 @@ export const ALIAS_DFFP_CLANS = {
     dummy         : '#2YVCYUCCP',
     clashtestdummy: '#2YVCYUCCP',
     ezcwl         : '#2QUP9UPGY',
+    ez            : '#2QUP9UPGY',
 } as const;
 
 export const aliasClan = (tag: string): string => {

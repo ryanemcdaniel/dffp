@@ -10,7 +10,7 @@ import {dHeader1, dHeader2, dHeader3, dSubtext} from '#src/discord/messages/stri
 
 const DEFAULT_LIMIT = 10;
 
-const spec = {
+export const WAR_LINKS_SPEC = {
     type       : ApplicationCommandType.ChatInput,
     name       : 'war-links',
     description: 'get player profile links of enemy top #10 for scouting',
@@ -29,7 +29,7 @@ const spec = {
     ] as const,
 } as const satisfies SpecInput;
 
-export const WAR_LINKS = buildDiscordCommand2(spec, async (discord, data, ops) => {
+export const WAR_LINKS = buildDiscordCommand2(WAR_LINKS_SPEC, async (discord, data, ops) => {
     const clanTag = aliasClan(ops.clan.value);
 
     const war = await api_coc.getCurrentWar({clanTag, round: 'CurrentRound'});
@@ -38,7 +38,7 @@ export const WAR_LINKS = buildDiscordCommand2(spec, async (discord, data, ops) =
         throw notFound('war data unavailable');
     }
 
-    const limit = ops.limit.value || DEFAULT_LIMIT;
+    const limit = ops.limit?.value || DEFAULT_LIMIT;
 
     const players = war.opponent.members
         .sort((p1, p2) => p1.mapPosition - p2.mapPosition)
@@ -53,12 +53,11 @@ export const WAR_LINKS = buildDiscordCommand2(spec, async (discord, data, ops) =
 
     const messageHeader
         = dHeader1(war.clan.name)
-        + dHeader3('vs')
-        + dHeader2(war.opponent.name)
+        + dHeader3(`vs ${war.opponent.name}`)
         + dSubtext('click the highlighted names to open in-game');
 
     const message = players.reduce(
-        (acc, p, idx) => acc + dHeader3(`\`${idx.toString().padEnd(2)} | ${p.tag.padEnd(maxTag)} |\` [${p.name}](<${p.shareLink}>)`),
+        (acc, p, idx) => acc + dHeader3(`\`${(idx + 1).toString().padEnd(2)} | ${p.tag.padEnd(maxTag)} |\` [${p.name}](<${p.shareLink}>)`),
         messageHeader,
     );
 

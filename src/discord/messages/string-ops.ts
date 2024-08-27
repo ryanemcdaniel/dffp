@@ -13,13 +13,22 @@ export const dLink
         : `[${name}](${link})`;
 
 export const dHeader1
-    = (text: string) => `# ${text}\n`;
+    = (txt: string) => `# ${txt}\n`;
 
 export const dHeader2
-    = (text: string) => `## ${text}\n`;
+    = (txt: string) => `## ${txt}\n`;
 
 export const dHeader3
-    = (text: string) => `### ${text}\n`;
+    = (txt: string) => `### ${txt}\n`;
 
 export const dSubtext
-    = (text: string) => `-# ${text}\n`;
+    = (txt: string) => `-# ${txt}\n`;
+
+export const dLines
+    = (...lines: string[]) => lines.join('\n');
+
+export const dCode
+    = (txt: string) => `\`${txt}\``;
+
+export const dCodeBlock
+    = (txt: string, type: string = '') => `\`\`\`${type}\n${txt}\`\`\``;

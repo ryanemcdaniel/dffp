@@ -1,9 +1,7 @@
 import type {APIGatewayProxyEventBase, APIGatewayProxyResult} from 'aws-lambda';
-import {badImplementation} from '@hapi/boom';
 import type {Boom} from '@hapi/boom';
 import {unauthorized} from '@hapi/boom';
 import {verifyKey} from 'discord-interactions';
-import {getSecret} from '#src/lambdas/client-aws.ts';
 import {respond, tryBody} from '#src/lambdas/api_discord/api-util.ts';
 import * as console from 'node:console';
 import type {APIInteraction} from 'discord-api-types/v10';
@@ -13,12 +11,12 @@ import {applicationCommand} from '#src/lambdas/api_discord/handlers/application-
 import {autocomplete} from '#src/lambdas/api_discord/handlers/autocomplete.ts';
 import {modalSubmit} from '#src/lambdas/api_discord/handlers/modal-submit.ts';
 import {messageComponent} from '#src/lambdas/api_discord/handlers/message-component.ts';
+import {logErr} from '#src/discord/api/post-channel-message.ts';
+import {initDiscord} from '#src/discord/api/base.ts';
 
 /**
  * @init
  */
-const discord_public_key = await getSecret('DISCORD_PUBLIC_KEY');
-
 const router = {
     [InteractionType.Ping]                          : pingPong,
     [InteractionType.ApplicationCommand]            : applicationCommand,
@@ -26,6 +24,8 @@ const router = {
     [InteractionType.ModalSubmit]                   : modalSubmit,
     [InteractionType.MessageComponent]              : messageComponent,
 } as const;
+
+const discord = await initDiscord();
 
 /**
  * @invoke
@@ -35,7 +35,12 @@ export const handler = async (req: APIGatewayProxyEventBase<null>): Promise<APIG
         const signature = req.headers['x-signature-ed25519']!;
         const timestamp = req.headers['x-signature-timestamp']!;
 
-        const isVerified = await verifyKey(Buffer.from(req.body!), signature, timestamp, discord_public_key);
+        const isVerified = await verifyKey(
+            Buffer.from(req.body!),
+            signature,
+            timestamp,
+            discord.public_key,
+        );
 
         if (!isVerified) {
             throw unauthorized('invalid request signature');
@@ -46,13 +51,7 @@ export const handler = async (req: APIGatewayProxyEventBase<null>): Promise<APIG
         return await router[body.type](body as never);
     }
     catch (e) {
-        const error = e as Error | Boom;
-
-        console.error(error, req);
-
-        const boom = 'isBoom' in error
-            ? error
-            : badImplementation();
+        const boom = await logErr(discord, e);
 
         return respond({
             status: boom.output.statusCode,
