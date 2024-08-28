@@ -55,6 +55,7 @@
         "@types/lodash": "4.17.7",
         "clashofclans.js": "3.3.12",
         "discord-interactions": "4.0.0",
+        "effect": "3.6.6",
         "fp-ts": "2.16.9",
         "futil": "1.76.4",
         "handlebars": "4.7.8",

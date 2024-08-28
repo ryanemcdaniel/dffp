@@ -2,17 +2,6 @@ export interface CK_BasicWar {
     clans: string[];
 }
 
-export type CK_Member = CK_War['clan']['members'][number];
-
-export type CK_Hit = {
-    attackerTag          : string;
-    defenderTag          : string;
-    stars                : number;
-    destructionPercentage: number;
-    order                : number;
-    duration             : number;
-};
-
 export interface CK_War {
     // status_code         : number;
     // timestamp           : number;
@@ -27,7 +16,7 @@ export interface CK_War {
     clan: {
         tag                  : string;
         name                 : string;
-        clanLevel            : string;
+        clanLevel            : number;
         attacks              : number;
         stars                : number;
         destructionPercentage: number;
@@ -58,7 +47,7 @@ export interface CK_War {
     opponent: {
         tag                  : string;
         name                 : string;
-        clanLevel            : string;
+        clanLevel            : number;
         attacks              : number;
         stars                : number;
         destructionPercentage: number;
@@ -87,3 +76,7 @@ export interface CK_War {
         }[];
     };
 };
+
+export type CK_Clan = CK_War['clan'];
+export type CK_Member = CK_War['clan']['members'][number];
+export type CK_Hit = Required<CK_War['clan']['members'][number]>['attacks'][number];
