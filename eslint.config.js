@@ -1,9 +1,6 @@
-// @ts-check
-
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import stylistic from '@stylistic/eslint-plugin';
-import {inspect} from 'node:util';
 
 const style = stylistic.configs.customize({
     flat        : true,
@@ -18,6 +15,9 @@ const style = stylistic.configs.customize({
 });
 
 const config = [
+    {
+        ignores: ['terraform', 'dist', 'coverage', 'node_modules', '.husky'],
+    },
     ...tseslint.config(
         {
             files  : ['**/*.ts', '**/*.mjs', '**/*.js'],
@@ -28,8 +28,22 @@ const config = [
             ],
             languageOptions: {
                 parser       : tseslint.parser,
+                sourceType   : 'module',
+                ecmaVersion  : 'latest',
                 parserOptions: {
-                    project: './tsconfig.eslint.json',
+                    project                                    : './tsconfig.eslint.json',
+                    lib                                        : ['esnext'],
+                    range                                      : true,
+                    jsDocParsingMode                           : 'all',
+                    tokens                                     : true,
+                    debugLevel                                 : false,
+                    warnOnUnsupportedTypeScriptVersion         : true,
+                    errorOnUnknownASTType                      : true,
+                    errorOnTypeScriptSyntacticAndSemanticIssues: true,
+                },
+                globals: {
+                    it      : 'readonly',
+                    describe: 'readonly',
                 },
             },
             plugins: {
@@ -65,9 +79,14 @@ const config = [
                 '@stylistic/no-multi-spaces'        : [2, {exceptions: {TSPropertySignature: true}}],
             },
         },
+        {
+            files: ['test/**/*'],
+            rules: {
+                '@typescript-eslint/no-unsafe-call'         : [0],
+                '@typescript-eslint/no-unsafe-member-access': [0],
+            },
+        },
     ),
 ];
 
 export default config;
-
-// console.log(inspect(config, false, null, true));

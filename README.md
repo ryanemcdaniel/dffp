@@ -19,6 +19,11 @@ brew install pyenv
 Node Version Manager
 ```bash
 brew install nvm
-nvm install 20
-nvm use 20
+nvm install 20.12.2
+nvm use 20.12.2
+```
+pnpm
+```bash
+npm i -g pnpm@9.9.0
+pnpm install
 ```

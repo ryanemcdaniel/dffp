@@ -7,7 +7,7 @@ insert_final_newline = true
 indent_size = tab
 indent_style = space
 
-[{tsconfig.json,tsconfig.eslint.json}]
+[{tsconfig.json,tsconfig.*.json}]
 ij_json_property_alignment = align_on_colon
 ij_json_array_wrapping = off
 ij_json_object_wrapping = off

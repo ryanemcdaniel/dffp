@@ -96,9 +96,6 @@ export const warOpponent = async () => {
             ? [cw.clan, cw.opponent]
             : [cw.opponent, cw.clan];
 
-        const hits = [...current.members, ...vs.members]
-            .map((m) => m.attacks.map());
-
         return {
             size           : cw.teamSize,
             current_stars  : current.stars,

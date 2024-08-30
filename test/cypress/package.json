@@ -1,7 +1,7 @@
 {
-    "name": "@dffp/cli",
+    "name": "@dffp/dffp-cypress",
     "version": "1.0.0",
-    "description": "command line tooling",
+    "description": "e2e cypress tests",
     "author": "dffp",
     "license": "ISC",
     "publishConfig": {
@@ -12,15 +12,7 @@
         "build": "echo \"[cli]: no build\"",
         "types": "echo \"[cli]: type check skipped\""
     },
-    "dependencies": {
-        "@types/yargs": "17.0.32",
-        "yargs": "17.7.2"
-    },
-    "bin": {
-        "dffp": "dffp.ts"
-    },
     "devDependencies": {
-        "esbuild": "0.23.1",
-        "tsx": "4.17.0"
+        "cypress": "13.14.1"
     }
 }
