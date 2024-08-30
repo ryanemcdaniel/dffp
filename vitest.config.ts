@@ -3,13 +3,13 @@ import {defineConfig} from 'vitest/config';
 export default defineConfig({
     test: {
         watch             : false,
+        globals           : true,
         expandSnapshotDiff: true,
         chaiConfig        : {
             includeStack     : true,
             truncateThreshold: false,
         },
-        testTimeout: 30000,
-        coverage   : {
+        coverage: {
             provider       : 'istanbul',
             reporter       : ['lcov'],
             all            : true,
@@ -20,5 +20,6 @@ export default defineConfig({
                 perFile: true,
             },
         },
+        logHeapUsage: true,
     },
 });
