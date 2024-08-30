@@ -10,9 +10,9 @@ export interface CK_War {
     state               : string;
     teamSize            : number;
     attacksPerMember    : number;
-    preparationStartTime: Date;
-    startTime           : Date;
-    endTime             : Date;
+    preparationStartTime: string;
+    startTime           : string;
+    endTime             : string;
     clan: {
         tag                  : string;
         name                 : string;

@@ -1,4 +1,4 @@
-import type {P} from '#src/model/pure.ts';
+import type {P} from '#src/pure/pure.ts';
 import type {CK_Clan} from '#src/clashking/types.ts';
 
 export type Clan = P<{

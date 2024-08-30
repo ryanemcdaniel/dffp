@@ -1,17 +1,19 @@
 import {concat, foldMap} from 'fp-ts/Array';
-import type {Hit} from '#src/model/fp-hit.ts';
-import type {GuessHigherKind, Override} from '#src/model/pure.ts';
+import type {Hit} from '#src/data/fp-builders/fp-hit.ts';
+import type {GuessHigherKind, Override} from '#src/pure/pure.ts';
 import type {Monoid} from 'fp-ts/Monoid';
-import {stats} from '#src/model/pure-stats.ts';
+import {flow} from 'fp-ts/function';
 
 export type Hits = Override<GuessHigherKind<Hit>, {
+    readonly a_pid: string[];
+    readonly a_cid: string[];
     readonly d_pid: string[];
     readonly d_cid: string[];
 }>;
 
 const EMPTY_HITS: Hits = {
-    a_pid : '',
-    a_cid : '',
+    a_pid : [],
+    a_cid : [],
     a_thl : [],
     a_pos : [],
     d_pid : [],
@@ -58,9 +60,9 @@ const HitsMonoid = {
     }),
 } as const satisfies Monoid<Hits>;
 
-export const toHits = foldMap(HitsMonoid)((h: Hit) => ({
-    a_pid: h.a_pid,
-    a_cid: h.a_pid,
+export const toHits = flow(foldMap(HitsMonoid)((h: Hit) => ({
+    a_pid: [h.a_pid],
+    a_cid: [h.a_pid],
 
     a_thl: [h.a_thl],
     a_pos: [h.a_pos],
@@ -79,27 +81,4 @@ export const toHits = foldMap(HitsMonoid)((h: Hit) => ({
     c_thld: [h.c_thld],
     c_posd: [h.c_posd],
     c_hnum: [h.c_hnum],
-}));
-
-export const toHitsStats = (h: Hits) => ({
-    a_pid: h.a_pid,
-    a_cid: h.a_pid,
-
-    a_thl: stats(h.a_thl),
-    a_pos: stats(h.a_pos),
-    d_pid: stats(h.d_pid),
-    d_cid: stats(h.d_cid),
-    d_thl: stats(h.d_thl),
-    d_pos: stats(h.d_pos),
-    h_ord: stats(h.h_ord),
-    h_str: stats(h.h_str),
-    h_dmg: stats(h.h_dmg),
-    h_dur: stats(h.h_dur),
-
-    c_ore0: stats(h.c_ore0),
-    c_ore1: stats(h.c_ore1),
-    c_ccre: stats(h.c_ccre),
-    c_thld: stats(h.c_thld),
-    c_posd: stats(h.c_posd),
-    c_hnum: stats(h.c_hnum),
-});
+})));

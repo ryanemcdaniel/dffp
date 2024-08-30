@@ -30,8 +30,7 @@ const init = (async () => {
     await api_coc.login({
         email,
         password,
-        keyCount: 1,
-        keyName : `${process.env.LAMBDA_ENV}-app-discord`,
+        keyName: `${process.env.LAMBDA_ENV}-app-discord`,
     });
 
     return await initDiscord();
@@ -66,7 +65,7 @@ export const handler = async (event: AppDiscordEvent) => {
         );
     }
     catch (e) {
-        await logErr(discord, e);
+        await logErr({...discord, auth_token: auth.contents.access_token}, e);
 
         await callDiscord({
             method  : 'PATCH',

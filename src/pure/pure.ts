@@ -2,8 +2,7 @@
 
 import {option} from 'fp-ts';
 import {flow} from 'fp-ts/function';
-import {map, reduce} from 'fp-ts/Array';
-import {toArray} from 'fp-ts/Record';
+import {reduce} from 'fp-ts/Array';
 
 export type n_bool =
     | 1
@@ -17,8 +16,6 @@ export type PM<T> = {[K in string]: T};
 export type PMB = PM<n_bool>;
 export type DynamicEnum = PM<string>;
 
-export const enu = () => ({}) as DynamicEnum;
-
 export type P<T>
     = T extends (infer A)[] ? readonly A[]
     : T extends Record<infer K, unknown> ? {readonly [k in K]: T[k]}
@@ -28,9 +25,13 @@ export type GuessHigherKind<T> = {
     readonly [K in keyof T]: T[K] extends number ? T[K][] : T[K]
 };
 
-export type Override<T, O>
-    = Omit<T, keyof O>
-    & O;
+export type GuessHigherKind2<T> = {
+    readonly [K in keyof T]: T[K][]
+};
+
+export type Override<T, O> = O extends never
+    ? T
+    : (Omit<T, keyof O> & O);
 
 export const def0 = option.getOrElse(() => 0);
 
@@ -50,3 +51,11 @@ export const reduceKVs = flow(
         return kvs;
     }),
 );
+
+export type Series<T> = {
+    readonly [K in keyof T]: T[K][]
+};
+
+export type Cubic<T> = {
+    readonly [K in keyof T]: T[K][][]
+};

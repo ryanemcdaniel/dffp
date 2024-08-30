@@ -63,7 +63,9 @@ module "lambda_app_discord" {
   custom_policy_json = data.aws_iam_policy_document.lambda_app_discord.json
   memory             = 512
   timeout            = 300
-  fn_env             = local.lambda_env
+  fn_env             = merge(local.lambda_env, {
+
+  })
   sqs                = true
   sqs_source_arns    = [module.lambda_api_discord.fn_arn]
 }

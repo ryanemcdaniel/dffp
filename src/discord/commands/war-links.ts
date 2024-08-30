@@ -24,7 +24,7 @@ export const WAR_LINKS_SPEC = {
         {
             type       : ApplicationCommandOptionType.Integer,
             name       : 'limit',
-            description: 'number of player links starting from #1 (def: 10)',
+            description: 'number of player links starting ingest #1 (def: 10)',
         },
     ] as const,
 } as const satisfies SpecInput;

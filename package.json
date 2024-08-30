@@ -58,10 +58,12 @@
         "effect": "3.6.6",
         "fp-ts": "2.16.9",
         "futil": "1.76.4",
+        "graph-data-structure": "3.5.0",
         "handlebars": "4.7.8",
         "hapi-pino": "12.1.0",
         "joi": "17.13.3",
         "path-to-regexp": "7.1.0",
+        "simple-statistics": "7.8.5",
         "uuid": "10.0.0"
     },
     "devDependencies": {

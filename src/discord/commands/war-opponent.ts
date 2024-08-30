@@ -4,9 +4,11 @@ import {ck_getPreviousWars} from '#src/clashking/api/get-war.ts';
 import {aliasClan} from '#src/discord/constants/alias.ts';
 import {api_coc} from '#src/lambdas/client-api-coc.ts';
 import {notFound, unauthorized} from '@hapi/boom';
-import {mapWars} from '#src/clashking/map-wars.ts';
 import {callDiscord} from '#src/discord/api/base.ts';
 import {patchOriginal} from '#src/discord/api/patch-original.ts';
+import {pipe} from 'fp-ts/function';
+import {fromCkWar} from '#src/data/ingest/ingest-cking-war.ts';
+import {map} from 'fp-ts/Array';
 
 export const WAR_OPPONENT_SPEC = {
     type       : ApplicationCommandType.ChatInput,
@@ -36,7 +38,11 @@ export const WAR_OPPONENT = buildDiscordCommand2(WAR_OPPONENT_SPEC, async (disco
 
     const previousWars = await ck_getPreviousWars(currentWar.opponent.tag);
 
-    const stats = mapWars();
+    const stats = pipe(
+        previousWars.contents,
+        map(fromCkWar),
+
+    );
 
     await callDiscord(patchOriginal(
         discord,
