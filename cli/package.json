@@ -13,7 +13,7 @@
         "types": "echo \"[cli]: type check skipped\""
     },
     "dependencies": {
-        "@types/yargs": "17.0.32",
+        "@types/yargs": "17.0.33",
         "yargs": "17.7.2"
     },
     "bin": {
@@ -21,6 +21,6 @@
     },
     "devDependencies": {
         "esbuild": "0.23.1",
-        "tsx": "4.17.0"
+        "tsx": "4.19.0"
     }
 }

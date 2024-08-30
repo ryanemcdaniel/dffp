@@ -42,6 +42,9 @@ importers:
       '@commitlint/config-conventional':
         specifier: 19.4.1
         version: 19.4.1
+      '@dffp/cli':
+        specifier: workspace:*
+        version: link:cli
       '@eslint/js':
         specifier: 9.9.1
         version: 9.9.1
@@ -88,7 +91,7 @@ importers:
   cli:
     dependencies:
       '@types/yargs':
-        specifier: 17.0.32
+        specifier: 17.0.33
         version: 17.0.33
       yargs:
         specifier: 17.7.2
@@ -98,7 +101,7 @@ importers:
         specifier: 0.23.1
         version: 0.23.1
       tsx:
-        specifier: 4.17.0
+        specifier: 4.19.0
         version: 4.19.0
 
   test/cypress:
@@ -2615,6 +2618,9 @@ packages:
 
   ms@2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
+
+  ms@2.1.3:
+    resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
 
   nanoid@3.3.7:
     resolution: {integrity: sha512-eSRppjcPIatRIMC1U6UngP8XFcz8MQWGQdt1MTBQ7NaAmvXDfvNxbvWV3x2y6CdEUciCSsDHDQZbhYaB8QEo2g==}
@@ -5504,7 +5510,7 @@ snapshots:
 
   debug@3.2.7(supports-color@8.1.1):
     dependencies:
-      ms: 2.1.2
+      ms: 2.1.3
     optionalDependencies:
       supports-color: 8.1.1
 
@@ -6590,6 +6596,8 @@ snapshots:
       obliterator: 1.6.1
 
   ms@2.1.2: {}
+
+  ms@2.1.3: {}
 
   nanoid@3.3.7: {}
 
