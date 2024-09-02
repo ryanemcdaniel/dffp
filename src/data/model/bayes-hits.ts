@@ -8,11 +8,12 @@ export const bayesHits = (graph: OptimizedWars): BayesianClassifier => {
     const hits = pipe(
         graph.hits,
         toArray,
+        // filter(([, h]) => h.data.stars === 3),
         filter(([, h]) => h.data.ore1 === 0),
         map(([,h]) => [
-            h.data.stars,
+            `${h.attacker.data.th_lvl}vs${h.defender.data.th_lvl}_${h.data.stars}`,
             ({
-                a_pid   : h.attacker.data.pid,
+                // a_pid   : h.attacker.data.pid,
                 a_th_lvl: String(h.attacker.data.th_lvl),
                 a_pos   : String(h.attacker.data.pos),
                 // d_pid   : h.defender.data.pid,
@@ -26,7 +27,7 @@ export const bayesHits = (graph: OptimizedWars): BayesianClassifier => {
 
     for (const h of hits) {
         // console.log(h);
-        model.train(h[1], `${h[0]}`);
+        model.train(h[1], h[0]);
     }
 
     return model;

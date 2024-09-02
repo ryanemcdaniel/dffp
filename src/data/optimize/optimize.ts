@@ -28,8 +28,11 @@ export const linkGraph = (data: OptimizedWars['data']): OptimizedWars => {
 
     for (const c of data.clans) {
         clans[c._id] = {
-            data   : c,
-            players: {},
+            data    : c,
+            players : {},
+            enemy   : {},
+            attacks : {},
+            defenses: {},
         };
     }
 
@@ -38,16 +41,24 @@ export const linkGraph = (data: OptimizedWars['data']): OptimizedWars => {
             data : w,
             clan1: clans[w.clans[0]._id],
             clan2: clans[w.clans[1]._id],
+            clans: {},
+            hits : {},
         };
         clans[w.clans[0]._id].war = wars[w._id];
+        clans[w.clans[0]._id].enemy = clans[w.clans[1]._id];
         clans[w.clans[1]._id].war = wars[w._id];
+        clans[w.clans[1]._id].enemy = clans[w.clans[0]._id];
+        wars[w._id].clans[w.clans[0]._id] = clans[w.clans[0]._id];
+        wars[w._id].clans[w.clans[1]._id] = clans[w.clans[1]._id];
     }
 
     for (const p of data.players) {
         players[p._id] = {
-            data: p,
-            war : wars[p._id_war],
-            clan: clans[p._id_clan],
+            data    : p,
+            war     : wars[p._id_war],
+            clan    : clans[p._id_clan],
+            attacks : {},
+            defenses: {},
         };
         clans[p._id_clan].players[p._id] = players[p._id];
     }
@@ -59,6 +70,11 @@ export const linkGraph = (data: OptimizedWars['data']): OptimizedWars => {
             attacker: players[h._id_attacker],
             defender: players[h._id_defender],
         };
+        wars[h._id_war].hits[h._id] = hits[h._id];
+        players[h._id_attacker].attacks[h._id] = hits[h._id];
+        players[h._id_defender].defenses[h._id] = hits[h._id];
+        clans[h._id_attacker_clan].attacks[h._id] = hits[h._id];
+        clans[h._id_defender_clan].defenses[h._id] = hits[h._id];
     }
 
     return {

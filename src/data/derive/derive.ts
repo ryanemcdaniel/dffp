@@ -38,11 +38,11 @@ export const deriveWar = (war: DispatchedWar): DerivedWar => {
                 let ore0 = 0,
                     ore1 = 0;
 
-                if (acc.ore[h.d_pid]) {
+                if (acc.ore[h.d_pid] === 1) {
                     ore1 = 1;
                 }
 
-                if (h.stars === 3 && !ore1) {
+                if (h.stars === 3 && ore1 === 0) {
                     acc.ore[h.d_pid] = 1;
                     ore0 = 1;
                 }
