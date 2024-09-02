@@ -1,7 +1,7 @@
 #!/usr/bin/env tsx
 
 import yargs from 'yargs';
-import { build } from './cmds/build';
+import {build} from './cmds/build';
 
 const dffp = yargs(process.argv.slice(2));
 
