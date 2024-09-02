@@ -1,6 +1,7 @@
 {
     "extends"        : "../../tsconfig.json",
+    "include"        : ["."],
     "compilerOptions": {
-        "types": ["node"]
+        "types": ["node", "cypress/globals"]
     }
 }

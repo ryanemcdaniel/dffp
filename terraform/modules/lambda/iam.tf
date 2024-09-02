@@ -23,7 +23,7 @@ resource "aws_iam_role" "execution_role" {
   assume_role_policy = data.aws_iam_policy_document.execution_role_policy.json
 }
 
-resource "aws_iam_role_policy_attachment" "discord_in" {
+resource "aws_iam_role_policy_attachment" "custom_policy" {
   policy_arn = aws_iam_policy.execution_policy.arn
   role       = aws_iam_role.execution_role.name
 }

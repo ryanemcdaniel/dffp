@@ -4,6 +4,10 @@
     "description": "",
     "author": "",
     "license": "ISC",
+    "engines": {
+        "node": "20.12.2",
+        "pnpm": "9.9.0"
+    },
     "type": "module",
     "scripts": {
         "types": "tsc --project tsconfig.json --noEmit",
@@ -13,42 +17,42 @@
         "fixlint": "eslint . --fix",
         "format": "terraform -chdir=terraform fmt -recursive",
         "init": "terraform -chdir=terraform init",
-        "plan": "terraform -chdir=terraform plan -var-file=.qual -out .qual.tfplan",
-        "apply": "terraform -chdir=terraform apply .qual.tfplan",
+        "plan-qual": "terraform -chdir=terraform plan -var-file=.qual -out .qual.tfplan",
+        "plan-prod": "terraform -chdir=terraform plan -var-file=.prod -out .prod.tfplan",
+        "apply-qual": "terraform -chdir=terraform apply .qual.tfplan",
+        "apply-prod": "terraform -chdir=terraform apply .prod.tfplan",
+        "reset": "rm -rf **/node_modules **/dist **/*.tfplan **/*.lock.hcl **/.terraform",
         "postinstall": "husky"
     },
     "dependencies": {
-        "@aws-sdk/client-dynamodb": "3.632.0",
+        "@aws-sdk/client-dynamodb": "3.637.0",
         "@aws-sdk/client-sqs": "3.637.0",
-        "@aws-sdk/lib-dynamodb": "3.632.0",
+        "@aws-sdk/lib-dynamodb": "3.637.0",
         "@hapi/boom": "10.0.1",
+        "@hapi/bourne": "3.0.0",
         "clashofclans.js": "3.3.12",
-        "discord-interactions": "4.0.0",
+        "discord-interactions": "4.1.0",
         "joi": "17.13.3"
     },
     "devDependencies": {
-        "@aws-sdk/client-ssm": "3.632.0",
-        "@commitlint/cli": "19.3.0",
-        "@commitlint/config-conventional": "19.2.2",
-        "@eslint/js": "9.9.0",
-        "@stylistic/eslint-plugin": "2.6.4",
-        "@stylistic/eslint-plugin-js": "2.6.4",
-        "@stylistic/eslint-plugin-plus": "2.6.4",
-        "@stylistic/eslint-plugin-ts": "2.6.4",
-        "@types/aws-lambda": "8.10.140",
+        "@aws-sdk/client-ssm": "3.637.0",
+        "@commitlint/cli": "19.4.1",
+        "@commitlint/config-conventional": "19.4.1",
+        "@dffp/cli": "workspace:*",
+        "@eslint/js": "9.9.1",
+        "@stylistic/eslint-plugin": "2.7.1",
+        "@types/aws-lambda": "8.10.145",
         "@types/eslint__js": "8.42.3",
-        "@types/node": "22.4.1",
-        "discord-api-types": "0.37.97",
+        "@types/node": "22.5.1",
+        "@vitest/coverage-istanbul": "2.0.5",
+        "discord-api-types": "0.37.98",
         "esbuild": "0.23.1",
-        "eslint": "8.57.0",
-        "husky": "9.0.11",
-        "tsx": "4.17.0",
-        "typescript": "5.4.5",
-        "typescript-eslint": "8.2.0",
-        "vite": "5.2.10",
-        "vitest": "1.5.2"
-    },
-    "workspaces": [
-        "cli"
-    ]
+        "eslint": "9.9.1",
+        "husky": "9.1.5",
+        "tsx": "4.19.0",
+        "typescript": "5.5.4",
+        "typescript-eslint": "8.3.0",
+        "vite": "5.4.2",
+        "vitest": "2.0.5"
+    }
 }
