@@ -113,7 +113,7 @@ export const bindApiCall = (baseUrl: string) =>
         let json: RJSON;
 
         try {
-            json = show(await resp.json()) as RJSON;
+            json = await resp.json() as RJSON;
         }
         catch (e) {
             json = {} as RJSON;
