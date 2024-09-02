@@ -25,6 +25,7 @@ export type DispatchedClan =
 export type DispatchedPlayer =
     & _Model
     & {
+        cid   : CID;
         pid   : PID;
         name  : IGNAME;
         pos   : int;
