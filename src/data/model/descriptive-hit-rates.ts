@@ -4,8 +4,10 @@ import {reduce} from 'fp-ts/Array';
 import {filter as filterRecords, reduce as reduceRecords, map as mapRecords} from 'fp-ts/Record';
 import {Ord} from 'fp-ts/string';
 import type {IDKV} from '#src/data/types.ts';
+import {tryOrDefault} from '#src/data/types-pure.ts';
+import type {ClanWarMember} from 'clashofclans.js';
 
-export const descriptiveHitRates = (cid: string, pids: string[], graph: OptimizedWars) => {
+export const descriptiveHitRates = (cid: string, pids: ClanWarMember[], graph: OptimizedWars) => {
     const [attacks, defenses] = pipe(
         graph.players,
         filterRecords((p) => p.data.cid === cid),
@@ -30,13 +32,13 @@ export const descriptiveHitRates = (cid: string, pids: string[], graph: Optimize
         }),
     );
 
-    return pipe(pids, reduce([] as [string, [number, number], [number, number]][], (acc, pid) => {
-        const [atks, defs] = [attacks[pid], defenses[pid]];
+    return pipe(pids, reduce([] as [ClanWarMember, [number, number], [number, number]][], (acc, pid) => {
+        const [atks, defs] = [attacks[pid.tag], defenses[pid.tag]];
 
         acc.push([
             pid,
-            [atks.filter((a) => a.data.stars === 3).length / atks.length, atks.length],
-            [defs.filter((a) => a.data.stars === 3).length / defs.length, defs.length],
+            tryOrDefault(() => [atks.filter((a) => a.data.stars === 3).length / atks.length, atks.length], [0, 0]),
+            tryOrDefault(() => [defs.filter((a) => a.data.stars < 3).length / defs.length, defs.length], [0, 0]),
         ]);
 
         return acc;

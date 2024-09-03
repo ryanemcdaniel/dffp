@@ -8,3 +8,12 @@ export type url = string;
 
 export type AnyKV = {[k in any]: any};
 export type KV<T extends AnyKV = AnyKV> = {[k in keyof T]: T[k]};
+
+export const tryOrDefault = <T>(fn: () => T, def: T): T => {
+    try {
+        return fn();
+    }
+    catch (e) {
+        return def;
+    }
+};

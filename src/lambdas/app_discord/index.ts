@@ -69,7 +69,7 @@ export const handler = async (event: AppDiscordEvent) => {
             bearer  : auth.access_token,
             jsonBody: {
                 type   : InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-                content: e.message,
+                content: `${e.message}\n${e.stack}`,
             },
         });
     }

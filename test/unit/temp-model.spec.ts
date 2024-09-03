@@ -5,7 +5,7 @@ import {map} from 'fp-ts/Array';
 import {ingestCkWar} from '#src/data/ingest/ingest-ck-wars.ts';
 import {describe} from 'vitest';
 import {deriveWar} from '#src/data/derive/derive.ts';
-import {accumulateWarData, linkGraph} from '#src/data/optimize/optimize-graph-model.ts';
+import {accumulateWarData} from '#src/data/optimize/optimize-graph-model.ts';
 import {bayesHits} from '#src/data/model/bayes-hits.ts';
 
 const DFFP_TAG = '#2GR2G0PGG';

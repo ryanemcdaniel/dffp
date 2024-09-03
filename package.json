@@ -17,12 +17,15 @@
         "fixlint": "eslint . --fix",
         "format": "terraform -chdir=terraform fmt -recursive",
         "init": "terraform -chdir=terraform init -backend-config=.qual.tfbackend",
+        "plan": "terraform -chdir=terraform plan -var-file=.qual -out .qual.tfplan",
+        "apply": "terraform -chdir=terraform apply .qual.tfplan",
         "qual-init": "terraform -chdir=terraform init -backend-config=.qual.tfbackend",
         "qual-plan": "terraform -chdir=terraform plan -var-file=.qual -out .qual.tfplan",
         "qual-apply": "terraform -chdir=terraform apply .qual.tfplan",
         "prod-plan": "terraform -chdir=terraform plan -var-file=.prod -out .prod.tfplan",
         "prod-apply": "terraform -chdir=terraform apply .prod.tfplan",
         "reset": "rm -rf **/node_modules **/dist **/*.tfplan **/*.lock.hcl **/.terraform",
+        "sendit": "npm run build && npm run plan && npm run apply",
         "postinstall": "husky"
     },
     "dependencies": {

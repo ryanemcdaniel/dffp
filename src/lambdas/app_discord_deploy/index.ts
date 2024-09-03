@@ -21,6 +21,15 @@ const commands = [
             name       : 'clan',
             description: 'tag or alias (ex. #2GR2G0PGG, main, labs, ctd, ...)',
             required   : true,
+        }, {
+            type       : ApplicationCommandOptionType.Integer,
+            name       : 'from',
+            description: 'starting war rank',
+        }, {
+            type       : ApplicationCommandOptionType.Integer,
+            name       : 'to',
+            description: 'ending war rank',
+
         }],
     },
     {
