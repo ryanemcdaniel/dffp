@@ -16,6 +16,12 @@ const commands = [
         type       : ApplicationCommandType.ChatInput,
         name       : 'war-opponent',
         description: 'TBD',
+        options    : [{
+            type       : ApplicationCommandOptionType.String,
+            name       : 'clan',
+            description: 'tag or alias (ex. #2GR2G0PGG, main, labs, ctd, ...)',
+            required   : true,
+        }],
     },
     {
         type       : ApplicationCommandType.ChatInput,
