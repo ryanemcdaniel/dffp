@@ -1,5 +1,5 @@
 resource "aws_iam_policy" "execution_policy" {
-  name   = "${var.prefix}-${var.fn_name}-execution-policy"
+  name   = "${var.prefix}-${local.fn_name}-execution-policy"
   policy = var.custom_policy_json
 }
 
@@ -19,7 +19,7 @@ data "aws_iam_policy_document" "execution_role_policy" {
 }
 
 resource "aws_iam_role" "execution_role" {
-  name               = "${var.prefix}-${var.fn_name}-execution-role"
+  name               = "${var.prefix}-${local.fn_name}-execution-role"
   assume_role_policy = data.aws_iam_policy_document.execution_role_policy.json
 }
 

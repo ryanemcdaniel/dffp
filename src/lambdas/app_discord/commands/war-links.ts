@@ -37,20 +37,12 @@ export const warLinks = async (body: APIChatInputApplicationCommandInteraction) 
 
     const message = players.reduce(
         (acc, [idx, tag, name, link]) => acc
-        + `### \`${idx.toString().padEnd(maxIdx)}`
-        + ` | ${tag.padEnd(maxTag)}`
-        + ` |\` [${name}](<${link}>)\n`,
-        `# ${currentWar.clan.name} vs. ${currentWar.opponent.name}\n`
-        + '-# click the highlighted names to open in-game\n',
+            .concat([`### \`${idx.toString().padEnd(maxIdx)}`])
+            .concat([` | ${tag.padEnd(maxTag)}`])
+            .concat([` |\` [${name}](<${link}>)\n`]),
+        [`# ${currentWar.clan.name} vs. ${currentWar.opponent.name}\n`]
+            .concat(['-# click the highlighted names to open in-game\n']),
     );
-
-    // const message = currentWar.isWarEnded
-    //     ? 'current war has already ended'
-    //     :
-    //         .reduce(
-    //             (acc, m, idx) => acc.concat(`#${idx + 1} ${m.tag} | ${m.name} | [Link](<${m.shareLink}>)\n`),
-    //             '',
-    //         );
 
     return message;
 };

@@ -110,10 +110,14 @@ export const bindApiCall = (baseUrl: string) =>
             headers: resp.headers,
         });
 
+        if (!resp.ok) {
+            throw new Error(`[${url.hostname}][${ops.method} ${ops.path}]: ${resp.status} ${resp.statusText}`);
+        }
+
         let json: RJSON;
 
         try {
-            json = show(await resp.json()) as RJSON;
+            json = await resp.json() as RJSON;
         }
         catch (e) {
             json = {} as RJSON;

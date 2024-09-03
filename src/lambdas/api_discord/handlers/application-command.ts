@@ -15,10 +15,10 @@ export const applicationCommand = async (body: APIApplicationCommandInteraction)
     return respond({
         status: 200,
         body  : {
-            type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-            data: {
-                content: 'fetching...',
-            },
+            type: InteractionResponseType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE,
+            // data: {
+            //     content: 'fetching...',
+            // },
         },
     });
 };

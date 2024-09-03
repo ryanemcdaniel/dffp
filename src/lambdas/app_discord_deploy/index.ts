@@ -16,6 +16,21 @@ const commands = [
         type       : ApplicationCommandType.ChatInput,
         name       : 'war-opponent',
         description: 'TBD',
+        options    : [{
+            type       : ApplicationCommandOptionType.String,
+            name       : 'clan',
+            description: 'tag or alias (ex. #2GR2G0PGG, main, labs, ctd, ...)',
+            required   : true,
+        }, {
+            type       : ApplicationCommandOptionType.Integer,
+            name       : 'from',
+            description: 'starting war rank (def: 1)',
+        }, {
+            type       : ApplicationCommandOptionType.Integer,
+            name       : 'to',
+            description: 'ending war rank (def: # of bases in current war)',
+
+        }],
     },
     {
         type       : ApplicationCommandType.ChatInput,
