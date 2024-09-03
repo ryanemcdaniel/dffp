@@ -1,5 +1,7 @@
-import type {int, isodate, unixdate} from '#src/data/types-pure.ts';
+import type {int, isodate} from '#src/data/types-pure.ts';
 import type {_Model, CID, IGNAME, PID} from '#src/data/types.ts';
+import type {Player} from 'clashofclans.js';
+import {type ClanWarMember} from 'clashofclans.js';
 
 export type DispatchedWar =
     & _Model
@@ -41,4 +43,13 @@ export type DispatchedHit =
         stars   : int;
         dmg_prct: int;
         duration: int;
+    };
+
+export type DispatchedModel =
+    & _Model
+    & {
+        wars   : DispatchedWar[];
+        current: {
+            players: Player[];
+        };
     };

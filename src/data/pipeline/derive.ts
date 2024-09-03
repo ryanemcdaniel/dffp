@@ -1,5 +1,5 @@
-import type {DispatchedClan, DispatchedHit, DispatchedPlayer, DispatchedWar} from '#src/data/ingest/ingest-types.ts';
-import type {DerivedHit, DerivedWar} from '#src/data/derive/derive-types.ts';
+import type {DispatchedClan, DispatchedHit, DispatchedModel, DispatchedPlayer, DispatchedWar} from '#src/data/pipeline/ingest-types.ts';
+import type {DerivedHit, DerivedModel, DerivedWar} from '#src/data/pipeline/derive-types.ts';
 import {pipe} from 'fp-ts/function';
 import {map, reduce, sort} from 'fp-ts/Array';
 import {fromCompare} from 'fp-ts/Ord';
@@ -61,9 +61,10 @@ export const deriveWar = (war: DispatchedWar): DerivedWar => {
                     _id_defender_clan: clans[players[h.d_pid].cid]._id,
 
                     order_norm: h.order / (2 * war.rules_size),
+
                     ore0,
                     ore1,
-                    ccre      : (!acc.ore[h.d_pid] && th_lvl_diff >= 2)
+                    ccre: (!acc.ore[h.d_pid] && th_lvl_diff >= 2)
                         ? 1
                         : 0,
                 });
@@ -71,5 +72,13 @@ export const deriveWar = (war: DispatchedWar): DerivedWar => {
                 return acc;
             }),
         ).hits,
+    };
+};
+
+export const deriveModel = (model: DispatchedModel): DerivedModel => {
+    return {
+        ...model,
+        current: model.current,
+        wars   : pipe(model.wars, map(deriveWar)),
     };
 };

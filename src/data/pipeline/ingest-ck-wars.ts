@@ -1,8 +1,8 @@
-import type {CK_War, CK_War_Clan} from '#src/api/clash-king.ts';
-import type {DispatchedClan, DispatchedHit, DispatchedPlayer, DispatchedWar} from '#src/data/ingest/ingest-types.ts';
 import {pipe} from 'fp-ts/function';
 import {map, flatMap} from 'fp-ts/Array';
 import {attachModelId} from '#src/data/types.ts';
+import type {CK_War, CK_War_Clan} from '#src/data/api/api-ck-previous-wars.ts';
+import type {DispatchedClan, DispatchedHit, DispatchedPlayer, DispatchedWar} from '#src/data/pipeline/ingest-types.ts';
 
 const ingestCkWarPlayers = (clan: CK_War_Clan): DispatchedPlayer[] => pipe(
     clan.members,

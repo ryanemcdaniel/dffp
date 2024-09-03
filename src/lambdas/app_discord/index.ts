@@ -1,14 +1,22 @@
 import {getSecret} from '#src/lambdas/client-aws.ts';
 import {tryJson} from '#src/lambdas/util.ts';
 import type {AppDiscordEvent} from '#src/lambdas/types-events.ts';
-import {authDiscord, callDiscord, initDiscord} from '#src/api/discord.ts';
+import {callDiscord, initDiscord} from '#src/discord/api/api-discord.ts';
 import {InteractionResponseType} from 'discord-interactions';
 import {api_coc} from '#src/lambdas/client-api-coc.ts';
 import console from 'node:console';
 import type {APIApplicationCommandInteraction, APIEmbed} from 'discord-api-types/v10';
-import {warLinks} from '#src/lambdas/app_discord/commands/war-links.ts';
+import {warLinks} from '#src/discord/commands/war-links.ts';
 import {show} from '../../../util.ts';
-import {warOpponent} from '#src/lambdas/app_discord/commands/war-opponent.ts';
+import {warOpponent} from '#src/discord/commands/war-opponent.ts';
+import {warScout} from '#src/discord/commands/war-scout.ts';
+import {authDiscord} from '#src/discord/api/auth-discord.ts';
+import {COMMAND_HANDLERS} from '#src/discord/command-handlers.ts';
+import {pipe} from 'fp-ts/function';
+import {fromEntries} from 'fp-ts/Record';
+import {reduce} from 'fp-ts/Array';
+import type {IDKV} from '#src/data/types.ts';
+import type {buildCommand} from '#src/discord/types.ts';
 
 /**
  * @init
@@ -20,17 +28,16 @@ const init = (async () => {
     await api_coc.login({
         email,
         password,
-        keyCount: 1,
-        keyName : `${process.env.LAMBDA_ENV}-app-discord`,
+        keyName: `${process.env.LAMBDA_ENV}-app-discord`,
     });
 
     return await initDiscord();
 })();
 
-const commands = {
-    'war-opponent': warOpponent,
-    'war-links'   : warLinks,
-};
+const commands = pipe(COMMAND_HANDLERS, reduce({} as IDKV<ReturnType<typeof buildCommand>[1]>, (acc, [name, cmd]) => {
+    acc[name] = cmd;
+    return acc;
+}));
 
 /**
  * @invoke
