@@ -44,13 +44,5 @@ export const warLinks = async (body: APIChatInputApplicationCommandInteraction) 
         + '-# click the highlighted names to open in-game\n',
     );
 
-    // const message = currentWar.isWarEnded
-    //     ? 'current war has already ended'
-    //     :
-    //         .reduce(
-    //             (acc, m, idx) => acc.concat(`#${idx + 1} ${m.tag} | ${m.name} | [Link](<${m.shareLink}>)\n`),
-    //             '',
-    //         );
-
     return message;
 };

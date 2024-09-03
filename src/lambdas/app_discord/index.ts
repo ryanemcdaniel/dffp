@@ -8,6 +8,7 @@ import console from 'node:console';
 import type {APIApplicationCommandInteraction} from 'discord-api-types/v10';
 import {warLinks} from '#src/lambdas/app_discord/commands/war-links.ts';
 import {show} from '../../../util.ts';
+import {warOpponent} from '#src/lambdas/app_discord/commands/war-opponent.ts';
 
 /**
  * @init
@@ -27,7 +28,7 @@ const init = (async () => {
 })();
 
 const commands = {
-    'war-opponent': () => 'command is not available yet',
+    'war-opponent': warOpponent,
     'war-links'   : warLinks,
 };
 

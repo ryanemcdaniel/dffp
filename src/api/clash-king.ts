@@ -54,5 +54,5 @@ export type CK_War = {
 
 export const callPreviousWars = async (tag: string) => await callClashKing<CK_War[]>({
     method: 'GET',
-    path  : `/war/${encodeURIComponent(tag)}/previous?timestamp_start=0&timestamp_end=9999999999&limit=100`,
+    path  : `/war/${encodeURIComponent(tag)}/previous?timestamp_start=0&timestamp_end=9999999999&limit=50`,
 });

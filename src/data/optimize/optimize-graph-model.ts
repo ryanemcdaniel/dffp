@@ -20,7 +20,7 @@ export const accumulateWarData = (wars: DerivedWar[]): OptimizedWars['data'] => 
     }));
 };
 
-export const linkGraph = (data: OptimizedWars['data']): OptimizedWars => {
+export const optimizeGraphModel = (data: OptimizedWars['data']): OptimizedWars => {
     const wars = {} as OptimizedWars['wars'];
     const clans = {} as OptimizedWars['clans'];
     const players = {} as OptimizedWars['players'];

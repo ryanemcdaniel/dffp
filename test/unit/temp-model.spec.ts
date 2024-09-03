@@ -5,7 +5,7 @@ import {map} from 'fp-ts/Array';
 import {ingestCkWar} from '#src/data/ingest/ingest-ck-wars.ts';
 import {describe} from 'vitest';
 import {deriveWar} from '#src/data/derive/derive.ts';
-import {accumulateWarData, linkGraph} from '#src/data/optimize/optimize.ts';
+import {accumulateWarData, linkGraph} from '#src/data/optimize/optimize-graph-model.ts';
 import {bayesHits} from '#src/data/model/bayes-hits.ts';
 
 const DFFP_TAG = '#2GR2G0PGG';
@@ -33,7 +33,7 @@ describe('temp', () => {
         console.log(bayesModel.totalCount);
 
         const score = bayesModel.score({
-            a_pid   : '#LQR0YQVJ',
+            // a_pid   : '#LQR0YQVJ',
             a_th_lvl: '16',
             a_pos   : '1',
             // d_pid   : '#9YL0YUPP2',

@@ -1,4 +1,4 @@
-import type {n_bool} from '#src/data/types-pure.ts';
+import type {n_bool, num} from '#src/data/types-pure.ts';
 import type {DispatchedClan, DispatchedHit, DispatchedPlayer, DispatchedWar} from '#src/data/ingest/ingest-types.ts';
 import type {UUID} from '#src/data/types.ts';
 
@@ -18,6 +18,7 @@ export type DerivedWar =
             _id_attacker_clan: UUID;
             _id_defender     : UUID;
             _id_defender_clan: UUID;
+            order_norm       : num;
             ore0             : n_bool; // all hits after are an ore hit
             ore1             : n_bool; // is current hit an ore hit
             ccre             : n_bool; // is current hit a cc reveal

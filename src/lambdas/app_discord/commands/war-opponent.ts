@@ -1,140 +1,57 @@
-import {callClashKing} from '#src/api/clash-king.ts';
-import {DFFP_CLANS} from '#src/lambdas/temp-constants.ts';
+import {callClashKing, callPreviousWars} from '#src/api/clash-king.ts';
+import {DFFP_CLANS, DFFP_CLANS_ALIAS} from '#src/lambdas/temp-constants.ts';
 import {show} from '../../../../util.ts';
+import type {APIChatInputApplicationCommandInteraction} from 'discord-api-types/v10';
+import {api_coc} from '#src/lambdas/client-api-coc.ts';
+import {pipe} from 'fp-ts/function';
+import {filter, flatMap, map, reduce, sort} from 'fp-ts/Array';
+import {ingestCkWar} from '#src/data/ingest/ingest-ck-wars.ts';
+import {deriveWar} from '#src/data/derive/derive.ts';
+import {accumulateWarData, optimizeGraphModel} from '#src/data/optimize/optimize-graph-model.ts';
+import {toArray, filter as filterRecords, map as mapRecords, reduce as reduceRecords} from 'fp-ts/Record';
+import {fromCompare} from 'fp-ts/Ord';
+import {Ord} from 'fp-ts/number';
+import type {ClanWarMember} from 'clashofclans.js';
+import {descriptiveHitRates} from '#src/data/model/descriptive-hit-rates.ts';
 
-type CKWars = {
-    state               : string;
-    teamSize            : number;
-    attacksPerMember    : 0 | 1;
-    preparationStartTime: string;
-    startTime           : string;
-    endTime             : string;
-    clan: {
-        tag                  : string;
-        name                 : string;
-        clanLevel            : string;
-        attacks              : number;
-        stars                : number;
-        destructionPercentage: number;
-        members: {
-            tag                : string;
-            name               : string;
-            townhallLevel      : number;
-            mapPosition        : number;
-            opponentAttacks    : number;
-            bestOpponentAttack?: {
-                attackerTag          : string;
-                defenderTag          : string;
-                stars                : number;
-                destructionPercentage: number;
-                order                : number;
-                duration             : number;
-            };
-            attacks?: {
-                attackerTag          : string;
-                defenderTag          : string;
-                stars                : number;
-                destructionPercentage: number;
-                order                : number;
-                duration             : number;
-            }[];
-        }[];
-    };
-    opponent: {
-        tag                  : string;
-        name                 : string;
-        clanLevel            : string;
-        attacks              : number;
-        stars                : number;
-        destructionPercentage: number;
-        members: {
-            tag                : string;
-            name               : string;
-            townhallLevel      : number;
-            mapPosition        : number;
-            opponentAttacks    : number;
-            bestOpponentAttack?: {
-                attackerTag          : string;
-                defenderTag          : string;
-                stars                : number;
-                destructionPercentage: number;
-                order                : number;
-                duration             : number;
-            };
-            attacks?: {
-                attackerTag          : string;
-                defenderTag          : string;
-                stars                : number;
-                destructionPercentage: number;
-                order                : number;
-                duration             : number;
-            }[];
-        }[];
-    };
-}[];
+export const warOpponent = async (body: APIChatInputApplicationCommandInteraction) => {
+    const [{value: clan}] = body.data.options!.filter((o) => o.name === 'clan') as {value: string}[];
 
-export const warOpponent = async () => {
-    const currentWar = await callClashKing<{clans: string[]}>({
-        method: 'GET',
-        path  : `/war/${encodeURIComponent(DFFP_CLANS[0])}/basic`,
-    });
+    const alias = clan.replaceAll(' ', '').toLowerCase();
 
-    const [opponent] = currentWar.contents.clans.filter((c) => c !== DFFP_CLANS[0]);
+    const clanTag = alias in DFFP_CLANS_ALIAS
+        ? DFFP_CLANS_ALIAS[alias]
+        : clan;
 
-    const previous = await callClashKing<CKWars>({
-        method: 'GET',
-        path  : `/war/${encodeURIComponent(opponent)}/previous`,
-        query : {
-            timestamp_start: 0,
-            timestamp_end  : 9999999999,
-            limit          : 10,
-        },
-    });
+    const currentWar = await api_coc.getCurrentWar(clanTag);
 
-    show(previous.contents.map((cw) => {
-        const [current, vs] = cw.clan.tag === opponent
-            ? [cw.clan, cw.opponent]
-            : [cw.opponent, cw.clan];
+    if (!currentWar) {
+        return 'no current war data available';
+    }
 
-        return {
-            size           : cw.teamSize,
-            current_stars  : current.stars,
-            current_attacks: current.members
-                .reduce((acc, m) => {
-                    m.attacks.forEach((a) => {
-                        acc.push({
-                            order  : a.order,
-                            att_tag: m.tag,
-                            att_pos: m.mapPosition,
-                            def_tag: a.defenderTag,
-                            stars  : a.stars,
-                            dmg    : a.destructionPercentage,
-                            dur    : a.duration,
-                        });
-                    });
+    if (currentWar.isWarEnded) {
+        return 'current war has already ended';
+    }
 
-                    return acc;
-                }, [])
-                .sort((a, b) => a.order - b.order),
+    const opponentTag = currentWar.opponent.tag;
+    const opponentPlayers = pipe(
+        currentWar.opponent.members,
+        sort(fromCompare<ClanWarMember>((a, b) => Ord.compare(a.mapPosition, b.mapPosition))),
+        map((m) => m.tag),
+    );
 
-            vs_stars  : vs.stars,
-            vs_attacks: vs.members
-                .reduce((acc, m) => {
-                    m.attacks.forEach((a) => {
-                        acc.push({
-                            order  : a.order,
-                            att_tag: m.tag,
-                            att_pos: m.mapPosition,
-                            def_tag: a.defenderTag,
-                            stars  : a.stars,
-                            dmg    : a.destructionPercentage,
-                            dur    : a.duration,
-                        });
-                    });
+    const wars = [
+        ...(await callPreviousWars(clanTag)).contents,
+        ...(await callPreviousWars(currentWar.opponent.tag)).contents,
+    ];
 
-                    return acc;
-                }, [])
-                .sort((a, b) => a.order - b.order),
-        };
-    }));
+    const graphModel = pipe(
+        wars,
+        map(ingestCkWar),
+        map(deriveWar),
+        accumulateWarData,
+        optimizeGraphModel,
+    );
+
+    return descriptiveHitRates(opponentTag, opponentPlayers, graphModel);
 };

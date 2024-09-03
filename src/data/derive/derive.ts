@@ -60,9 +60,10 @@ export const deriveWar = (war: DispatchedWar): DerivedWar => {
                     _id_defender     : players[h.d_pid]._id,
                     _id_defender_clan: clans[players[h.d_pid].cid]._id,
 
+                    order_norm: h.order / (2 * war.rules_size),
                     ore0,
                     ore1,
-                    ccre: (!acc.ore[h.d_pid] && th_lvl_diff >= 2)
+                    ccre      : (!acc.ore[h.d_pid] && th_lvl_diff >= 2)
                         ? 1
                         : 0,
                 });
