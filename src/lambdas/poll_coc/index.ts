@@ -15,11 +15,8 @@ const init = (async () => {
     await api_coc.login({
         email,
         password,
-        keyCount: 1,
-        keyName : `${process.env.LAMBDA_ENV}-poll-coc`,
+        keyName: `${process.env.LAMBDA_ENV}-poll-coc`,
     });
-
-    const dummy = '';
 })();
 
 /**

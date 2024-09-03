@@ -1,7 +1,5 @@
-import {bindApiCall} from '#src/api/api-call.ts';
 import type {int, isodate, unixdate, url} from '#src/data/types-pure.ts';
-
-export const callClashKing = bindApiCall('https://api.clashking.xyz');
+import {callClashKing} from '#src/data/api/api-ck.ts';
 
 export type CK_War_Member = {
     tag               : string;
@@ -9,7 +7,7 @@ export type CK_War_Member = {
     townhallLevel     : int;
     mapPosition       : int;
     attacks?          : CK_War_Hit[];
-    opponentAttacks   : 1;
+    opponentAttacks   : int;
     bestOpponentAttack: CK_War_Hit;
 };
 
@@ -38,7 +36,7 @@ export type CK_War_Hit = {
 };
 
 export type CK_War = {
-    state               : 'warEnded';
+    state               : string;
     teamSize            : int;
     attacksPerMember    : int;
     battleModifier      : string;
@@ -54,5 +52,20 @@ export type CK_War = {
 
 export const callPreviousWars = async (tag: string) => await callClashKing<CK_War[]>({
     method: 'GET',
-    path  : `/war/${encodeURIComponent(tag)}/previous?timestamp_start=0&timestamp_end=9999999999&limit=50`,
+    path  : `/war/${encodeURIComponent(tag)}/previous`,
+    query : {
+        timestamp_start: 0,
+        timestamp_end  : 9999999999,
+        limit          : 50,
+    },
 });
+
+export const callCkWarsByClan = async (cids: string[]): Promise<CK_War[]> => {
+    const wars = [] as CK_War[];
+
+    for (const cid of cids) {
+        wars.push(...(await callPreviousWars(cid)).contents);
+    }
+
+    return wars;
+};

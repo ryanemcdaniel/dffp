@@ -1,7 +1,11 @@
 import {getSecret} from '#src/lambdas/client-aws.ts';
-import {authDiscord, callDiscord} from '#src/api/discord.ts';
-import type {APIApplicationCommand, RESTPostAPIApplicationCommandsJSONBody} from 'discord-api-types/v10';
-import {ApplicationCommandType, ApplicationCommandOptionType} from 'discord-api-types/v10';
+import {callDiscord} from '#src/discord/api/api-discord.ts';
+import {pipe} from 'fp-ts/function';
+import {toArray} from 'fp-ts/Record';
+import {reduce} from 'fp-ts/Array';
+import type {RESTPostAPIApplicationCommandsJSONBody} from 'discord-api-types/v10';
+import {COMMANDS} from '#src/discord/commands.ts';
+import {authDiscord} from '#src/discord/api/auth-discord.ts';
 
 /**
  * @init
@@ -11,39 +15,11 @@ const discord_app_id = await getSecret('DISCORD_APP_ID');
 const discord_client_id = await getSecret('DISCORD_CLIENT_ID');
 const discord_client_secret = await getSecret('DISCORD_CLIENT_SECRET');
 
-const commands = [
-    {
-        type       : ApplicationCommandType.ChatInput,
-        name       : 'war-opponent',
-        description: 'TBD',
-        options    : [{
-            type       : ApplicationCommandOptionType.String,
-            name       : 'clan',
-            description: 'tag or alias (ex. #2GR2G0PGG, main, labs, ctd, ...)',
-            required   : true,
-        }, {
-            type       : ApplicationCommandOptionType.Integer,
-            name       : 'from',
-            description: 'starting war rank (def: 1)',
-        }, {
-            type       : ApplicationCommandOptionType.Integer,
-            name       : 'to',
-            description: 'ending war rank (def: # of bases in current war)',
-
-        }],
-    },
-    {
-        type       : ApplicationCommandType.ChatInput,
-        name       : 'war-links',
-        description: 'get player profile links of enemy top #10 for scouting',
-        options    : [{
-            type       : ApplicationCommandOptionType.String,
-            name       : 'clan',
-            description: 'tag or alias (ex. #2GR2G0PGG, main, labs, ctd, ...)',
-            required   : true,
-        }],
-    },
-] as const satisfies RESTPostAPIApplicationCommandsJSONBody[];
+const COMMAND_CONFIG = pipe(
+    COMMANDS,
+    toArray,
+    reduce([] as RESTPostAPIApplicationCommandsJSONBody[], (acc, [, cmd]) => [...acc, cmd]),
+) satisfies RESTPostAPIApplicationCommandsJSONBody[];
 
 /**
  * @invoke
@@ -55,7 +31,7 @@ export const handler = async () => {
         'applications.commands.update',
     );
 
-    for (const cmd of commands) {
+    for (const cmd of COMMAND_CONFIG) {
         await callDiscord({
             method  : 'POST',
             path    : `/applications/${discord_app_id}/commands`,

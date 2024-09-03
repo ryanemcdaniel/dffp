@@ -1,5 +1,6 @@
 import type {IDKV} from '#src/data/types.ts';
-import type {DerivedClan, DerivedHit, DerivedPlayer, DerivedWar} from '#src/data/derive/derive-types.ts';
+import type {DerivedClan, DerivedHit, DerivedPlayer, DerivedWar} from '#src/data/pipeline/derive-types.ts';
+import type {Player} from 'clashofclans.js';
 
 export type OptimizedWar = {
     data : DerivedWar;
@@ -39,9 +40,15 @@ export type OptimizedWars = {
         clans  : DerivedClan[];
         players: DerivedPlayer[];
         hits   : DerivedHit[];
+        current: {
+            players: Player[];
+        };
     };
     wars   : IDKV<OptimizedWar>;
     clans  : IDKV<OptimizedClan>;
     players: IDKV<OptimizedPlayer>;
     hits   : IDKV<OptimizedHit>;
+    current: {
+        players: IDKV<Player>;
+    };
 };

@@ -25,7 +25,7 @@
         "prod-plan": "terraform -chdir=terraform plan -var-file=.prod -out .prod.tfplan",
         "prod-apply": "terraform -chdir=terraform apply .prod.tfplan",
         "reset": "rm -rf **/node_modules **/dist **/*.tfplan **/*.lock.hcl **/.terraform",
-        "sendit": "npm run build && npm run plan && npm run apply",
+        "sendit": "pnpm run build && pnpm run plan && pnpm run apply",
         "postinstall": "husky"
     },
     "dependencies": {

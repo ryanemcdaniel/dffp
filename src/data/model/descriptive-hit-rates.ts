@@ -1,7 +1,7 @@
-import type {OptimizedHit, OptimizedWars} from '#src/data/optimize/optimize-types.ts';
+import type {OptimizedHit, OptimizedWars} from '#src/data/pipeline/optimize-types.ts';
 import {pipe} from 'fp-ts/function';
 import {reduce} from 'fp-ts/Array';
-import {filter as filterRecords, reduce as reduceRecords, map as mapRecords} from 'fp-ts/Record';
+import {filter as filterRecords, reduce as reduceRecords} from 'fp-ts/Record';
 import {Ord} from 'fp-ts/string';
 import type {IDKV} from '#src/data/types.ts';
 import {tryOrDefault} from '#src/data/types-pure.ts';
