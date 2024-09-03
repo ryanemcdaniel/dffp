@@ -20,7 +20,7 @@ export const warOpponent = async (body: APIChatInputApplicationCommandInteractio
     const [fromVal] = body.data.options!.filter((o) => o.name === 'from') as ({value?: number} | undefined)[];
 
     const to = Number.parseInt(String(toVal?.value ?? '50'));
-    const from = Number.parseInt(String(fromVal.value ?? '1'));
+    const from = Number.parseInt(String(fromVal?.value ?? '1'));
 
     const alias = clan.replaceAll(' ', '').toLowerCase();
 
