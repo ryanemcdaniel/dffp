@@ -5,7 +5,7 @@ import {authDiscord, callDiscord, initDiscord} from '#src/api/discord.ts';
 import {InteractionResponseType} from 'discord-interactions';
 import {api_coc} from '#src/lambdas/client-api-coc.ts';
 import console from 'node:console';
-import type {APIApplicationCommandInteraction} from 'discord-api-types/v10';
+import type {APIApplicationCommandInteraction, APIEmbed} from 'discord-api-types/v10';
 import {warLinks} from '#src/lambdas/app_discord/commands/war-links.ts';
 import {show} from '../../../util.ts';
 import {warOpponent} from '#src/lambdas/app_discord/commands/war-opponent.ts';
@@ -48,17 +48,25 @@ export const handler = async (event: AppDiscordEvent) => {
 
         auth = await authDiscord(discord.client_id, discord.client_secret, 'identify connections');
 
-        const message = await commands[body.data.name](body);
+        const message: string[] = await commands[body.data.name](body);
 
-        await callDiscord({
-            method  : 'PATCH',
-            path    : `/webhooks/${discord.app_id}/${body.token}/messages/@original`,
-            bearer  : auth.access_token,
-            jsonBody: {
-                type   : InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-                content: message,
-            },
-        });
+        if ('title' in message) {
+            await callDiscord({
+                method  : 'PATCH',
+                path    : `/webhooks/${discord.app_id}/${body.token}/messages/@original`,
+                bearer  : auth.access_token,
+                jsonBody: {
+                    type  : InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+                    embeds: [{
+                        title      : message.title,
+                        description: message.desc.join(''),
+                    } satisfies APIEmbed],
+                },
+            });
+        }
+        else {
+            await sendNormalMessages(message, discord, auth, body);
+        }
     }
     catch (e) {
         console.error(e);
@@ -70,6 +78,53 @@ export const handler = async (event: AppDiscordEvent) => {
             jsonBody: {
                 type   : InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
                 content: `${e.message}\n${e.stack}`,
+            },
+        });
+    }
+};
+
+const sendNormalMessages = async (message: string[], discord, auth, body) => {
+    let curIdx = 0;
+    let pastIdx = 0;
+    let curLen = 0;
+    const idxs = [];
+    for (const m of message) {
+        curLen += m.length;
+        curIdx += 1;
+        if (curLen > 1900) {
+            idxs.push([pastIdx, curIdx]);
+            pastIdx = curIdx;
+            curLen = 0;
+        }
+    }
+
+    if (curLen > 0) {
+        idxs.push([pastIdx, message.length]);
+    }
+
+    // idxs[idxs.length - 1][1] = ;
+
+    const [first, ...rest] = idxs;
+
+    console.log('idxs', idxs);
+
+    await callDiscord({
+        method  : 'PATCH',
+        path    : `/webhooks/${discord.app_id}/${body.token}/messages/@original`,
+        bearer  : auth.access_token,
+        jsonBody: {
+            type   : InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+            content: message.slice(first[0], first[1]).join(''),
+        },
+    });
+
+    for (const range of rest) {
+        await callDiscord({
+            method  : 'POST',
+            path    : `/webhooks/${discord.app_id}/${body.token}`,
+            bearer  : auth.access_token,
+            jsonBody: {
+                content: message.slice(range[0], range[1]).join(''),
             },
         });
     }

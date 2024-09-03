@@ -37,11 +37,11 @@ export const warLinks = async (body: APIChatInputApplicationCommandInteraction) 
 
     const message = players.reduce(
         (acc, [idx, tag, name, link]) => acc
-        + `### \`${idx.toString().padEnd(maxIdx)}`
-        + ` | ${tag.padEnd(maxTag)}`
-        + ` |\` [${name}](<${link}>)\n`,
-        `# ${currentWar.clan.name} vs. ${currentWar.opponent.name}\n`
-        + '-# click the highlighted names to open in-game\n',
+            .concat([`### \`${idx.toString().padEnd(maxIdx)}`])
+            .concat([` | ${tag.padEnd(maxTag)}`])
+            .concat([` |\` [${name}](<${link}>)\n`]),
+        [`# ${currentWar.clan.name} vs. ${currentWar.opponent.name}\n`]
+            .concat(['-# click the highlighted names to open in-game\n']),
     );
 
     return message;

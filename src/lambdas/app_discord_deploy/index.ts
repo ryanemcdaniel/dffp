@@ -24,11 +24,11 @@ const commands = [
         }, {
             type       : ApplicationCommandOptionType.Integer,
             name       : 'from',
-            description: 'starting war rank',
+            description: 'starting war rank (def: 1)',
         }, {
             type       : ApplicationCommandOptionType.Integer,
             name       : 'to',
-            description: 'ending war rank',
+            description: 'ending war rank (def: # of bases in current war)',
 
         }],
     },
