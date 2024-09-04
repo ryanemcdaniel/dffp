@@ -57,17 +57,22 @@ export const handler = async (event: AppDiscordEvent) => {
 
         const message: string[] = await commands[body.data.name](body);
 
-        if ('title' in message) {
+        if ('title' in message[0]) {
             await callDiscord({
                 method  : 'PATCH',
                 path    : `/webhooks/${discord.app_id}/${body.token}/messages/@original`,
                 bearer  : auth.access_token,
                 jsonBody: {
                     type  : InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-                    embeds: [{
-                        title      : message.title,
-                        description: message.desc.join(''),
-                    } satisfies APIEmbed],
+                    embeds: message.map((m) => ({
+                        title      : m.title,
+                        description: m.desc.join(''),
+                        footer     : m.footer
+                            ? {
+                                    text: m.footer.join(''),
+                                }
+                            : undefined,
+                    } satisfies APIEmbed)),
                 },
             });
         }

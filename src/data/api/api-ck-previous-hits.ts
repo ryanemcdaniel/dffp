@@ -1,4 +1,4 @@
-import {callClashKing} from '#src/data/api/api-ck.ts';
+import {callClashKing, CK_LIMIT} from '#src/data/api/api-ck.ts';
 import type {int, isodate, num, url} from '#src/data/types-pure.ts';
 import type {CID, PID} from '#src/data/types.ts';
 
@@ -64,7 +64,7 @@ export const callPreviousHitsByPlayer = async (tag: string) => await callClashKi
     query : {
         timestamp_start: 0,
         timestamp_end  : 2527625513,
-        limit          : 50,
+        limit          : CK_LIMIT,
     },
 });
 

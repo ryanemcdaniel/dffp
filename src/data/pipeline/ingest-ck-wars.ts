@@ -32,11 +32,13 @@ const ingestCkWarClan = (clan: CK_War_Clan): DispatchedClan => attachModelId({
     cid  : clan.tag,
     name : clan.name,
     level: clan.clanLevel,
+    stars: clan.stars,
+    dmg  : clan.destructionPercentage,
 });
 
 export const ingestCkWar = (war: CK_War): DispatchedWar => attachModelId({
     rules_size : war.teamSize,
-    rules_atks : war.attacksPerMember,
+    rules_atks : war.attacksPerMember ?? 1,
     rules_prep : war.preparationStartTime,
     rules_start: war.startTime,
     rules_end  : war.endTime,

@@ -1,6 +1,6 @@
 import {pipe} from 'fp-ts/function';
 import {filterWithIndex, reduceWithIndex, zip} from 'fp-ts/Array';
-import {descriptiveHitRates} from '#src/data/model/descriptive-hit-rates.ts';
+import {descriptiveHitRates} from '#src/data/model-descriptive/descriptive-hit-rates.ts';
 import {initEmbedAcc} from '#src/lambdas/app_discord/build-embed.ts';
 import {buildCommand} from '#src/discord/types.ts';
 import {COMMANDS} from '#src/discord/commands.ts';

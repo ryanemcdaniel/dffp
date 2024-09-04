@@ -34,7 +34,7 @@ export type OptimizedHit = {
     defender: OptimizedPlayer;
 };
 
-export type OptimizedWars = {
+export type GraphModel = {
     data: {
         wars   : DerivedWar[];
         clans  : DerivedClan[];
@@ -52,3 +52,8 @@ export type OptimizedWars = {
         players: IDKV<Player>;
     };
 };
+
+export type GWars = IDKV<OptimizedWar>;
+export type GClans = IDKV<OptimizedClan>;
+export type GHits = IDKV<OptimizedHit>;
+export type GPlayers = IDKV<OptimizedPlayer>;
