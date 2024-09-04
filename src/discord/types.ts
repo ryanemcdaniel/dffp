@@ -15,8 +15,8 @@ type DiscordInteraction =
 export type EmbedSpec =
     & Omit<APIEmbed, 'description' | 'footer'>
     & {
-        desc  : string[];
-        footer: string[];
+        desc   : string[];
+        footer?: string[];
     };
 
 type ResolvedInput<T extends CommandConfig> =
@@ -35,7 +35,7 @@ type ResolvedInput<T extends CommandConfig> =
 export const buildCommand
     = <
         T extends CommandConfig,
-        R = EmbedSpec[],
+        R extends EmbedSpec[] = EmbedSpec[],
     >
     (spec: T, fn: (outer: ResolvedInput<T>) => Promise<R>) => {
         const getOps

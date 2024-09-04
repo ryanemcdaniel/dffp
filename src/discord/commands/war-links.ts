@@ -1,49 +1,40 @@
-import {api_coc} from '#src/lambdas/client-api-coc.ts';
-import {DFFP_CLANS_ALIAS} from '#src/lambdas/temp-constants.ts';
-import type {APIChatInputApplicationCommandInteraction} from 'discord-api-types/v10';
 import {COMMANDS} from '#src/discord/commands.ts';
+import {buildCommand} from '#src/discord/types.ts';
+import {pipe} from 'fp-ts/function';
+import {fromCompare} from 'fp-ts/Ord';
+import {OrdN} from '#src/data/pure.ts';
+import type {ClanWarMember} from 'clashofclans.js';
+import {dBold, dCode, dEmpL, dHdr3, dLine, dLink, dSubH, nNatT} from '#src/discord/command-util/message.ts';
+import {concatL, mapL, sortL} from '#src/data/pure-list.ts';
+import {dTable} from '#src/discord/command-util/message-table.ts';
+import {fetchCurrentClanWar} from '#src/discord/command-util/fetch-current.ts';
 
-export const warLinks = [COMMANDS.WAR_LINK.name, async (body: APIChatInputApplicationCommandInteraction) => {
-    const [{value: clan}] = body.data.options!.filter((o) => o.name === 'clan') as {value: string}[];
+export const warLinks = buildCommand(COMMANDS.WAR_LINK, async (body) => {
+    const war = await fetchCurrentClanWar(body.data.options.clan);
 
-    const alias = clan.replaceAll(' ', '').toLowerCase();
-
-    const clanTag = alias in DFFP_CLANS_ALIAS
-        ? DFFP_CLANS_ALIAS[alias]
-        : clan;
-
-    const currentWar = await api_coc.getCurrentWar(clanTag);
-
-    if (!currentWar) {
-        return 'no current war data available';
-    }
-
-    if (currentWar.isWarEnded) {
-        return 'current war has already ended';
-    }
-
-    const players = currentWar.opponent.members
-        .sort((a, b) => a.mapPosition - b.mapPosition)
-        .filter((_, idx) => idx < 10)
-        .map((m, idx) => [idx + 1, m.tag, m.name, m.shareLink] as const);
-
-    const [maxIdx, maxTag, maxName] = [
-        players.reduce((a, [idx]) => a < idx.toString().length
-            ? idx.toString().length
-            : a, 0),
-        players.reduce((a, [,tag]) => a < tag.length
-            ? tag.length
-            : a, 0),
-    ];
-
-    const message = players.reduce(
-        (acc, [idx, tag, name, link]) => acc
-            .concat([`### \`${idx.toString().padEnd(maxIdx)}`])
-            .concat([` | ${tag.padEnd(maxTag)}`])
-            .concat([` |\` [${name}](<${link}>)\n`]),
-        [`# ${currentWar.clan.name} vs. ${currentWar.opponent.name}\n`]
-            .concat(['-# click the highlighted names to open in-game\n']),
+    const opponentMembers = pipe(
+        war.opponent.members,
+        sortL(fromCompare<ClanWarMember>((a, b) => OrdN.compare(a.mapPosition, b.mapPosition))),
     );
 
-    return message;
-}] as const;
+    return [{
+        title: '',
+        desc : pipe(
+            [
+                dHdr3(`${war.clan.name} vs. ${war.opponent.name}`),
+                dLink('click to open opponent clan in-game', war.opponent.shareLink),
+                dEmpL(),
+            ],
+            concatL(pipe(
+                [['wr', 'th', 'tag', 'name/link']],
+                concatL(pipe(opponentMembers, mapL((m) =>
+                    [nNatT(m.mapPosition), nNatT(m.townHallLevel), m.tag, dCode(dBold(dLink(m.name, m.shareLink)))],
+                ))),
+                dTable,
+                mapL(dCode),
+            )),
+            concatL([dSubH('click the highlighted names to open in-game')]),
+            mapL(dLine),
+        ),
+    }];
+});
