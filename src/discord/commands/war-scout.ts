@@ -3,24 +3,24 @@ import {COMMANDS} from '#src/discord/commands.ts';
 import {buildGraphModel} from '#src/data/build-graph-model.ts';
 import {pipe} from 'fp-ts/function';
 import {queryAttacksByClan, queryClan, queryWarsByClan} from '#src/data/query/graph-query.ts';
-import {filterL, flatMapL, mapIdxL, mapL, numL, reduceL} from '#src/data/pure-list.ts';
-import type {num} from '#src/data/types-pure.ts';
+import {filterL, mapL, numL, reduceL} from '#src/data/pure-list.ts';
 import {mean} from 'simple-statistics';
 import {
     dBold,
-    dCode,
-    dHdr1, dHdr2,
+    dEmpL,
+    dHdr2,
     dHdr3,
-    dLines, dLink,
-    dNotA, dSubC,
-    dSubH,
+    dLines,
+    dNotA,
+    dSubC,
     nIdex,
-    nNatr, nNatT,
+    nNatr,
+    nNatT,
     nPrct,
 } from '#src/discord/command-util/message.ts';
 import {dTable} from '#src/discord/command-util/table.ts';
 import {descriptiveHitRates} from '#src/data/model-descriptive/descriptive-hit-rates.ts';
-import {concat, flatMap, reverse} from 'fp-ts/Array';
+import {concat} from 'fp-ts/Array';
 
 export const warScout = buildCommand(COMMANDS.WAR_SCOUT, async (body) => {
     const graph = await buildGraphModel(body.data.options.clan);
@@ -59,18 +59,6 @@ export const warScout = buildCommand(COMMANDS.WAR_SCOUT, async (body) => {
 
     const hitRates = descriptiveHitRates(graph.opponentTag, graph.opponentMembers, graph.model);
 
-    // const clanAttackStats = pipe(
-    //     graph.model,
-    //     queryAttacksByClan(graph.clanTag),
-    //     describeHits1D,
-    // );
-    //
-    // const clanDefenseStats = pipe(
-    //     graph.model,
-    //     queryAttacksByClan(graph.clanTag),
-    //     describeHits1D,
-    // );
-
     return [{
         title: '',
         desc : dLines([
@@ -80,24 +68,26 @@ export const warScout = buildCommand(COMMANDS.WAR_SCOUT, async (body) => {
         title: '',
         desc : dLines([
             dHdr2(`War Log Analysis n=${wars.length}`),
-            '',
+            dEmpL(),
             dBold('basic info'),
             pipe(dTable([
                 [`name`, graph.currentWar.opponent.name],
                 [`tag`, graph.currentWar.opponent.tag],
                 [`W-L-D`, `${nNatr(record[0])}-${nNatr(record[1])}-${nNatr(record[2])}`],
             ]), mapL(dSubC)),
-            '',
+            dEmpL(),
             dBold('scouting index'),
             pipe(dTable([
-                ['w/l ratio', nIdex(record[0] / (record[0] + record[1] + record[2])), ''],
+                ['win:loss', nIdex(record[0] / (record[0] + record[1] + record[2])), ''],
                 ['trojan', nIdex(trojanHorseIndex), '0 = early, 1 = late'],
-                ['sequence', dNotA(), '0 = 1-man-army'],
+                ['sequence', dNotA(), '1 = 1-man-army'],
+                ['similarity', dNotA(), '1 = 1-man-army'],
+                ['activity', dNotA(), ''],
                 ['attack 𝞰', dNotA(), ''],
                 ['defend 𝞰', dNotA(), ''],
                 ['weight 𝞰', dNotA(), '0 = maxers'],
             ]), mapL(dSubC)),
-            '',
+            dEmpL(),
             dBold('war averages'),
             pipe(dTable([
                 ['3 star attempts', nNatr(hitsAttempt.length / wars.length), nPrct((hitsAttempt.length) / hitsPossible)],
@@ -109,7 +99,7 @@ export const warScout = buildCommand(COMMANDS.WAR_SCOUT, async (body) => {
     }, {
         title: '',
         desc : dLines([
-            dHdr2(`War Rank Analysis`),
+            dHdr2(`Rank Analysis`),
             pipe(
                 [['rk', 'th', 'hit rate', 'def rate', 'name']],
                 concat(pipe(

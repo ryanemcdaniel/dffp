@@ -17,6 +17,8 @@ export const dSubC = (s: string) => `-# ${dCode(s)}`;
 
 export const dLink = (s: string, l: url) => `[${s}](${l})`;
 
+export const dNewL = () => `\n`;
+export const dEmpL = () => ``;
 export const dLine = (s: string) => `${s}\n`;
 export const dLines = (s: string[]) => pipe(s, mapL(dLine));
 
