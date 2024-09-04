@@ -6,7 +6,12 @@ export type DerivedWar =
     & DispatchedWar
     & {
         clans: (DispatchedClan & {
-            _id_war: UUID;
+            _id_war         : UUID;
+            score_stars     : num;
+            score_dmg       : num;
+            score_duration  : num;
+            score_atks      : num;
+            score_atks_total: num;
         })[];
         players: (DispatchedPlayer & {
             _id_war : UUID;
@@ -22,6 +27,7 @@ export type DerivedWar =
             ore0             : num; // all hits after are an ore hit
             ore1             : num; // is current hit an ore hit
             ccre             : num; // is current hit a cc reveal
+            // real             : num;
         })[];
     };
 

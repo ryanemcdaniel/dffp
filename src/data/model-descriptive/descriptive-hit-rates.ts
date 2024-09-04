@@ -1,4 +1,4 @@
-import type {OptimizedHit, OptimizedWars} from '#src/data/pipeline/optimize-types.ts';
+import type {OptimizedHit, GraphModel} from '#src/data/pipeline/optimize-types.ts';
 import {pipe} from 'fp-ts/function';
 import {reduce} from 'fp-ts/Array';
 import {filter as filterRecords, reduce as reduceRecords} from 'fp-ts/Record';
@@ -7,7 +7,7 @@ import type {IDKV} from '#src/data/types.ts';
 import {tryOrDefault} from '#src/data/types-pure.ts';
 import type {ClanWarMember} from 'clashofclans.js';
 
-export const descriptiveHitRates = (cid: string, pids: ClanWarMember[], graph: OptimizedWars) => {
+export const descriptiveHitRates = (cid: string, pids: ClanWarMember[], graph: GraphModel) => {
     const [attacks, defenses] = pipe(
         graph.players,
         filterRecords((p) => p.data.cid === cid),

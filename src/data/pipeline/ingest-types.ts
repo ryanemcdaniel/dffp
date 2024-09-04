@@ -22,6 +22,8 @@ export type DispatchedClan =
         cid  : CID;
         name : IGNAME;
         level: int;
+        stars: int;
+        dmg  : int;
     };
 
 export type DispatchedPlayer =

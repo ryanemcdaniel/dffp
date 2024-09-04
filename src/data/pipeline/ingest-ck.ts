@@ -9,11 +9,16 @@ import type {IDKV} from '#src/data/types.ts';
 import {attachModelId} from '#src/data/types.ts';
 import type {CK_Player_PreviousHits} from '#src/data/api/api-ck-previous-hits.ts';
 import type {CK_War} from '#src/data/api/api-ck-previous-wars.ts';
+import console from 'node:console';
 
 export const ingestCkToModel = (prevWars: CK_War[], players?: Player[], playerPrevious?: CK_Player_PreviousHits[]) => {
+    console.log('[INGEST]: starting...');
+
     const wars = pipe(prevWars, map(ingestCkWar));
 
     if (players && playerPrevious) {
+        console.log('[INGEST]: complete');
+
         return attachModelId({
             wars: pipe(
                 ingestCkPlayerPreviousWars(playerPrevious),
@@ -41,6 +46,8 @@ export const ingestCkToModel = (prevWars: CK_War[], players?: Player[], playerPr
             },
         });
     }
+
+    console.log('[INGEST]: complete');
 
     return attachModelId({
         wars,

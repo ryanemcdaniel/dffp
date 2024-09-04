@@ -1,18 +1,21 @@
 import type {DerivedModel} from '#src/data/pipeline/derive-types.ts';
 import {pipe} from 'fp-ts/function';
 import {reduce} from 'fp-ts/Array';
-import type {OptimizedWars} from '#src/data/pipeline/optimize-types.ts';
+import type {GraphModel} from '#src/data/pipeline/optimize-types.ts';
 import type {IDKV} from '#src/data/types.ts';
 import type {Player} from 'clashofclans.js';
+import console from 'node:console';
 
-export const accumulateWarData = (model: DerivedModel): OptimizedWars['data'] => {
+export const accumulateWarData = (model: DerivedModel): GraphModel['data'] => {
     const data_initial = {
         ...model,
         wars   : [],
         clans  : [],
         players: [],
         hits   : [],
-    } as OptimizedWars['data'];
+    } as GraphModel['data'];
+
+    console.log('[GRAPH]: accumulate');
 
     return pipe(model.wars, reduce(data_initial, (acc, w) => {
         acc.wars.push(w);
@@ -23,11 +26,11 @@ export const accumulateWarData = (model: DerivedModel): OptimizedWars['data'] =>
     }));
 };
 
-export const optimizeGraphModel = (data: OptimizedWars['data']): OptimizedWars => {
-    const wars = {} as OptimizedWars['wars'];
-    const clans = {} as OptimizedWars['clans'];
-    const players = {} as OptimizedWars['players'];
-    const hits = {} as OptimizedWars['hits'];
+export const optimizeGraphModel = (data: GraphModel['data']): GraphModel => {
+    const wars = {} as GraphModel['wars'];
+    const clans = {} as GraphModel['clans'];
+    const players = {} as GraphModel['players'];
+    const hits = {} as GraphModel['hits'];
 
     for (const c of data.clans) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -80,6 +83,8 @@ export const optimizeGraphModel = (data: OptimizedWars['data']): OptimizedWars =
         clans[h._id_attacker_clan].attacks[h._id] = hits[h._id];
         clans[h._id_defender_clan].defenses[h._id] = hits[h._id];
     }
+
+    console.log('[GRAPH]: complete');
 
     return {
         data,

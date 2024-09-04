@@ -1,5 +1,5 @@
 import type {int, isodate, unixdate, url} from '#src/data/types-pure.ts';
-import {callClashKing} from '#src/data/api/api-ck.ts';
+import {callClashKing, CK_LIMIT} from '#src/data/api/api-ck.ts';
 
 export type CK_War_Member = {
     tag               : string;
@@ -38,7 +38,7 @@ export type CK_War_Hit = {
 export type CK_War = {
     state               : string;
     teamSize            : int;
-    attacksPerMember    : int;
+    attacksPerMember?   : int;
     battleModifier      : string;
     preparationStartTime: isodate;
     startTime           : isodate;
@@ -56,7 +56,7 @@ export const callPreviousWars = async (tag: string) => await callClashKing<CK_Wa
     query : {
         timestamp_start: 0,
         timestamp_end  : 9999999999,
-        limit          : 50,
+        limit          : CK_LIMIT,
     },
 });
 
