@@ -4,7 +4,7 @@ import {concat, map, sort} from 'fp-ts/Array';
 import {fromCompare} from 'fp-ts/Ord';
 import type {ClanWarMember} from 'clashofclans.js';
 import {Ord} from 'fp-ts/number';
-import {getAliasTag} from '#src/lambdas/app_discord/get-alias-tag.ts';
+import {getAliasTag} from '#src/discord/command-util/get-alias-tag.ts';
 import {notFound} from '@hapi/boom';
 import {ingestCkToModel} from '#src/data/pipeline/ingest-ck.ts';
 import {deriveModel} from '#src/data/pipeline/derive.ts';

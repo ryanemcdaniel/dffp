@@ -1,10 +1,24 @@
-import {pipe} from 'fp-ts/function';
-import {filterWithIndex, reduceWithIndex, zip} from 'fp-ts/Array';
+import {flow, pipe} from 'fp-ts/function';
 import {descriptiveHitRates} from '#src/data/model-descriptive/descriptive-hit-rates.ts';
-import {initEmbedAcc} from '#src/lambdas/app_discord/build-embed.ts';
 import {buildCommand} from '#src/discord/types.ts';
 import {COMMANDS} from '#src/discord/commands.ts';
 import {buildGraphModel} from '#src/data/build-graph-model.ts';
+import {concatL, filterIdxL, flatMapL, flattenL, mapIdxL, zipL} from '#src/data/pure-list.ts';
+import {getFromTo} from '#src/discord/command-util/default-options.ts';
+import {
+    dCrss, dEmpL,
+    dHdr3,
+    dLines,
+    dNewL,
+    dSubC,
+    dSUCr,
+    dSUnC,
+    nNatr,
+    nNatT,
+    nPrct,
+} from '#src/discord/command-util/message.ts';
+import {dTable} from '#src/discord/command-util/message-table.ts';
+import {identity} from 'fp-ts';
 
 export const warOpponent = buildCommand(COMMANDS.WAR_OPPONENT, async (body) => {
     const graph = await buildGraphModel(body.data.options.clan);
@@ -12,34 +26,38 @@ export const warOpponent = buildCommand(COMMANDS.WAR_OPPONENT, async (body) => {
     const clanRates = descriptiveHitRates(graph.clanTag, graph.clanMembers, graph.model);
     const opponentRates = descriptiveHitRates(graph.opponentTag, graph.opponentMembers, graph.model);
 
-    const from = Number(String(body.data.options.from ?? '1'));
-    const to = Number(String(body.data.options.to ?? '50'));
+    const [from, to] = getFromTo(body);
 
-    return pipe(
-        zip(clanRates, opponentRates),
-        filterWithIndex((idx) => idx >= from - 1 && idx <= to - 1),
-        reduceWithIndex(
-            initEmbedAcc(`${graph.currentWar.clan.name} vs. ${graph.currentWar.opponent.name}`, 'hit/def rate vs. hit/def rate\n'),
-            (idx, acc, [p1, p2]) => {
-                const i = String(idx + 1).padEnd(2);
-                const p1Name = p1[0].name;
-                const p1hr = (p1[1][0] * 100).toPrecision(3);
-                const p1dr = (p1[2][0] * 100).toPrecision(3);
-                const p1hrn = String(p1[1][1]);
-                const p1drn = String(p1[2][1]);
-                const p2Name = p2[0].name;
-                const p2hr = (p2[1][0] * 100).toPrecision(3);
-                const p2dr = (p2[2][0] * 100).toPrecision(3);
-                const p2hrn = String(p2[1][1]);
-                const p2drn = String(p2[2][1]);
-
-                return {
-                    ...acc,
-                    desc: acc.desc
-                        .concat([`#${i} **${p1Name}** vs. **${p2Name}**\n`])
-                        .concat([`-# ${p1hr}%, ${p1dr}%  (n=${p1hrn},${p1drn}) vs. ${p2hr}%, ${p2dr}%  (n=${p2hrn},${p2drn})\n`]),
-                };
-            },
-        ),
+    const rates = pipe(
+        zipL(clanRates, opponentRates),
+        filterIdxL((idx) => idx >= from - 1 && idx <= to - 1),
     );
+
+    return [{
+        desc: pipe(
+            [
+                dHdr3(`${graph.currentWar.clan.name} vs. ${graph.currentWar.opponent.name}`),
+            ],
+            concatL(pipe(
+                [
+                    ['rk', 'th', ' % hr', ' % dr', 'name'],
+                    [''],
+                ],
+                concatL(pipe(
+                    rates,
+                    mapIdxL((idx, [p1, p2]) => [
+                        [nNatT(idx + from), nNatT(p1[0].townHallLevel), `${nPrct(p1[1][0])} n=${nNatr(p1[1][1])}`, `${nPrct(p1[2][0])} n=${nNatr(p1[2][1])}`, (p1[0].name)],
+                        ['', nNatT(p2[0].townHallLevel), `${nPrct(p2[1][0])} n=${nNatr(p2[1][1])}`, `${nPrct(p2[2][0])} n=${nNatr(p2[2][1])}`, (p2[0].name)],
+                        [''],
+                    ]),
+                    flattenL,
+                )),
+                dTable,
+                mapIdxL((idx, t) => idx % 3 === 1
+                    ? dEmpL()
+                    : dSubC(t)),
+            )),
+            dLines,
+        ),
+    }];
 });

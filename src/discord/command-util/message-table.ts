@@ -1,15 +1,12 @@
-import {mapIdxL, mapL, reduceL} from '#src/data/pure-list.ts';
+import {concatL, mapIdxL, mapL, reduceL} from '#src/data/pure-list.ts';
 import {pipe} from 'fp-ts/function';
 import {range} from 'fp-ts/NonEmptyArray';
 
 export const dTable = (tss: string[][]) => {
     const longest = pipe(
         range(0, tss[0].length - 1),
-        mapL((idx) => pipe(tss, mapL((ts) => ts[idx]))),
+        mapL((idx) => pipe(tss, mapL((ts) => ts[idx] ?? []))),
         mapL(reduceL(0, (n, t) => {
-            if (t.includes('](')) {
-                return n;
-            }
             const len = Array.from(t).length;
             return len > n
                 ? len
@@ -35,3 +32,9 @@ export const dTable = (tss: string[][]) => {
         mapL(reduceL('', (ts0, t) => ts0 + t + ' ')),
     );
 };
+
+export const dTableFull = (header: string[][], rows: string[][]) => pipe(
+    header,
+    concatL(rows),
+    dTable,
+);

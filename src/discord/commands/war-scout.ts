@@ -3,24 +3,11 @@ import {COMMANDS} from '#src/discord/commands.ts';
 import {buildGraphModel} from '#src/data/build-graph-model.ts';
 import {pipe} from 'fp-ts/function';
 import {queryAttacksByClan, queryClan, queryWarsByClan} from '#src/data/query/graph-query.ts';
-import {filterL, mapL, numL, reduceL} from '#src/data/pure-list.ts';
+import {concatL, filterL, mapL, numL, reduceL} from '#src/data/pure-list.ts';
 import {mean} from 'simple-statistics';
-import {
-    dBold,
-    dEmpL,
-    dHdr2,
-    dHdr3,
-    dLines,
-    dNotA,
-    dSubC,
-    nIdex,
-    nNatr,
-    nNatT,
-    nPrct,
-} from '#src/discord/command-util/message.ts';
-import {dTable} from '#src/discord/command-util/table.ts';
+import {dBold, dEmpL, dHdr2, dHdr3, dLines, dNotA, dSubC, nIdex, nNatr, nNatT, nPrct} from '#src/discord/command-util/message.ts';
+import {dTable} from '#src/discord/command-util/message-table.ts';
 import {descriptiveHitRates} from '#src/data/model-descriptive/descriptive-hit-rates.ts';
-import {concat} from 'fp-ts/Array';
 
 export const warScout = buildCommand(COMMANDS.WAR_SCOUT, async (body) => {
     const graph = await buildGraphModel(body.data.options.clan);
@@ -73,7 +60,7 @@ export const warScout = buildCommand(COMMANDS.WAR_SCOUT, async (body) => {
             pipe(dTable([
                 [`name`, graph.currentWar.opponent.name],
                 [`tag`, graph.currentWar.opponent.tag],
-                [`W-L-D`, `${nNatr(record[0])}-${nNatr(record[1])}-${nNatr(record[2])}`],
+                [`W-L-D`, `${(record[0])}-${(record[1])}-${(record[2])}`],
             ]), mapL(dSubC)),
             dEmpL(),
             dBold('scouting index'),
@@ -101,8 +88,10 @@ export const warScout = buildCommand(COMMANDS.WAR_SCOUT, async (body) => {
         desc : dLines([
             dHdr2(`Rank Analysis`),
             pipe(
-                [['rk', 'th', 'hit rate', 'def rate', 'name']],
-                concat(pipe(
+                [
+                    ['rk', 'th', 'r% hit', 'r% def', 'name'],
+                ],
+                concatL(pipe(
                     hitRates,
                     mapL(([p, hr, dr]) => [nNatT(p.mapPosition), nNatT(p.townHallLevel), `${nPrct(hr[0])} n=${nNatr(hr[1])}`, `${nPrct(dr[0])} n=${nNatr(dr[1])}`, ((p.name))]),
                 )),
