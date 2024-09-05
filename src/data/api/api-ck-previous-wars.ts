@@ -1,4 +1,4 @@
-import type {int, isodate, unixdate, url} from '#src/data/types-pure.ts';
+import type {int, isodate, num, unixdate, url} from '#src/data/types-pure.ts';
 import {callClashKing, CK_LIMIT} from '#src/data/api/api-ck.ts';
 
 export type CK_War_Member = {
@@ -50,21 +50,21 @@ export type CK_War = {
     opponent            : CK_War_Clan;
 };
 
-export const callPreviousWars = async (tag: string) => await callClashKing<CK_War[]>({
+export const callPreviousWars = async (tag: string, limit) => await callClashKing<CK_War[]>({
     method: 'GET',
     path  : `/war/${encodeURIComponent(tag)}/previous`,
     query : {
         timestamp_start: 0,
         timestamp_end  : 9999999999,
-        limit          : CK_LIMIT,
+        limit          : limit,
     },
 });
 
-export const callCkWarsByClan = async (cids: string[]): Promise<CK_War[]> => {
+export const callCkWarsByClan = async (cids: string[], limit: num): Promise<CK_War[]> => {
     const wars = [] as CK_War[];
 
     for (const cid of cids) {
-        wars.push(...(await callPreviousWars(cid)).contents);
+        wars.push(...(await callPreviousWars(cid, limit)).contents);
     }
 
     return wars;

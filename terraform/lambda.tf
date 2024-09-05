@@ -61,7 +61,7 @@ module "lambda_app_discord" {
   prefix             = local.prefix
   fn_name            = "app_discord"
   custom_policy_json = data.aws_iam_policy_document.lambda_app_discord.json
-  memory             = 512
+  memory             = 1024
   timeout            = 300
   fn_env             = local.lambda_env
   sqs                = true

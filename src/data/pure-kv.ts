@@ -8,11 +8,13 @@ import type {AnyKV} from '#src/data/types-pure.ts';
 import {
     map as mapKV,
     filter as filterKV,
+    size as sizeKV,
 } from 'fp-ts/Record';
 
 export {
     mapKV,
     filterKV,
+    sizeKV,
 };
 
 export const reduceKV = reduce(OrdS);

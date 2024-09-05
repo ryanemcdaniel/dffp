@@ -58,21 +58,21 @@ export type CK_Player_PreviousHits = {
     defenses: CK_Player_PreviousHitsAttack[];
 };
 
-export const callPreviousHitsByPlayer = async (tag: string) => await callClashKing<{items: CK_Player_PreviousHits[]}>({
+export const callPreviousHitsByPlayer = async (tag: string, limit) => await callClashKing<{items: CK_Player_PreviousHits[]}>({
     method: 'GET',
     path  : `/player/${encodeURIComponent(tag)}/warhits`,
     query : {
         timestamp_start: 0,
         timestamp_end  : 2527625513,
-        limit          : CK_LIMIT,
+        limit          : limit,
     },
 });
 
-export const callCkWarsByPlayer = async (pids: string[]): Promise<CK_Player_PreviousHits[]> => {
+export const callCkWarsByPlayer = async (pids: string[], limit): Promise<CK_Player_PreviousHits[]> => {
     const wars = [] as CK_Player_PreviousHits[];
 
     for (const pid of pids) {
-        wars.push(...(await callPreviousHitsByPlayer(pid)).contents.items);
+        wars.push(...(await callPreviousHitsByPlayer(pid, limit)).contents.items);
     }
 
     return wars;

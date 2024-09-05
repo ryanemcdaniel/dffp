@@ -3,8 +3,14 @@ import {ApplicationCommandOptionType} from 'discord-api-types/v10';
 export const OPTION_CLAN = {
     type       : ApplicationCommandOptionType.String,
     name       : 'clan',
-    description: 'tag or alias (ex. #2GR2G0PGG, main, labs, ctd, ...)',
+    description: 'tag/alias (ex. #2GR2G0PGG, main, labs...)',
     required   : true,
+} as const;
+
+export const OPTION_EXHAUSTIVE = {
+    type       : ApplicationCommandOptionType.Boolean,
+    name       : 'exhaustive',
+    description: 'enable creative bypass when clan war log is private',
 } as const;
 
 export const OPTION_FROM = {
@@ -29,12 +35,6 @@ export const OPTION_NSHOW = {
     type       : ApplicationCommandOptionType.Boolean,
     name       : 'nshow',
     description: 'turn off n sample size display in output',
-} as const;
-
-export const OPTION_EXHAUSTIVE = {
-    type       : ApplicationCommandOptionType.Boolean,
-    name       : 'exhaustive',
-    description: 'enable creative bypass when clan war log is private',
 } as const;
 
 export const OPTION_LATEST_PLAYER_INFO = {
