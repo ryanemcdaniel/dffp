@@ -73,10 +73,16 @@ export const handler = async (event: AppDiscordEvent) => {
 
         await callDiscord({
             method  : 'PATCH',
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
             path    : `/webhooks/${discord.app_id}/${body.token}/messages/@original`,
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
             bearer  : auth.access_token,
             jsonBody: {
                 type   : InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-expect-error
                 content: `${e.message}\n${e.stack}`,
             },
         });

@@ -1,5 +1,5 @@
 import type {bool, int} from '#src/data/types-pure.ts';
-import type {CID} from '#src/data/types.ts';
+import type {Any, CID} from '#src/data/types.ts';
 import {getAliasTag} from '#src/discord/command-util/get-alias-tag.ts';
 import {
     getExhaustive,
@@ -23,7 +23,8 @@ export type SharedOptions = {
     exhaustive : bool;
 };
 
-export const getSharedOptions = (body): SharedOptions => ({
+export const getSharedOptions = (body: Any): SharedOptions => ({
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument
     cid1       : getAliasTag(body.data.options.clan),
     limit      : getLimit(body),
     from       : getFrom(body),

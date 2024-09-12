@@ -50,7 +50,7 @@ export type CK_War = {
     opponent            : CK_War_Clan;
 };
 
-export const callPreviousWars = async (tag: string, limit) => await callClashKing<CK_War[]>({
+export const callPreviousWars = async (tag: string, limit: num) => await callClashKing<CK_War[]>({
     method: 'GET',
     path  : `/war/${encodeURIComponent(tag)}/previous`,
     query : {

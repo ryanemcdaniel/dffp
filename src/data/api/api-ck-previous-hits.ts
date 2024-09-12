@@ -1,4 +1,4 @@
-import {callClashKing, CK_LIMIT} from '#src/data/api/api-ck.ts';
+import {callClashKing} from '#src/data/api/api-ck.ts';
 import type {int, isodate, num, url} from '#src/data/types-pure.ts';
 import type {CID, PID} from '#src/data/types.ts';
 
@@ -68,7 +68,7 @@ export const callPreviousHitsByPlayer = async (tag: string, limit: num) => await
     },
 });
 
-export const callCkWarsByPlayer = async (pids: string[], limit): Promise<CK_Player_PreviousHits[]> => {
+export const callCkWarsByPlayer = async (pids: string[], limit: num): Promise<CK_Player_PreviousHits[]> => {
     const wars = [] as CK_Player_PreviousHits[];
 
     for (const pid of pids) {
