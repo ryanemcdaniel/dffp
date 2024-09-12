@@ -87,7 +87,9 @@ export const handler = async (event: AppDiscordEvent) => {
             bearer  : auth.access_token,
             jsonBody: {
                 type   : InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-                content: `something went wrong. show this to ryan:\n${process.env.AWS_LAMBDA_LOG_GROUP_NAME}\n${process.env.AWS_LAMBDA_LOG_STREAM_NAME}`,
+                content: `something went wrong. show this to ryan:\n`
+                + `\`log group:      \` ${process.env.AWS_LAMBDA_LOG_GROUP_NAME}\n`
+                + `\`lambda instance:\` ${process.env.AWS_LAMBDA_LOG_STREAM_NAME}\n`,
             },
         });
     }
