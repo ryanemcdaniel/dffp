@@ -13,11 +13,13 @@ import {applicationCommand} from '#src/lambdas/api_discord/handlers/application-
 import {autocomplete} from '#src/lambdas/api_discord/handlers/autocomplete.ts';
 import {modalSubmit} from '#src/lambdas/api_discord/handlers/modal-submit.ts';
 import {messageComponent} from '#src/lambdas/api_discord/handlers/message-component.ts';
+import {DISCORD_PUBLIC_KEY} from '#src/constants-secrets.ts';
+import {logError} from '#src/api/log-error.ts';
 
 /**
  * @init
  */
-const discord_public_key = await getSecret('DISCORD_PUBLIC_KEY');
+const discord_public_key = await getSecret(DISCORD_PUBLIC_KEY);
 
 const router = {
     [InteractionType.Ping]                          : pingPong,
@@ -49,6 +51,7 @@ export const handler = async (req: APIGatewayProxyEventBase<null>): Promise<APIG
         const error = e as Error | Boom;
 
         console.error(error, req);
+        await logError(error);
 
         const boom = 'isBoom' in error
             ? error

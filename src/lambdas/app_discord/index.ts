@@ -14,13 +14,16 @@ import {reduce} from 'fp-ts/ReadonlyArray';
 import type {IDKV} from '#src/data/types.ts';
 import type {buildCommand, EmbedSpec} from '#src/discord/types.ts';
 import {EMBED_COLOR} from '#src/discord/command-util/message-embed.ts';
+import {logError} from '#src/api/log-error.ts';
+import {COC_PASSWORD, COC_USER} from '#src/constants-secrets.ts';
+import * as process from 'node:process';
 
 /**
  * @init
  */
 const init = (async () => {
-    const email = await getSecret('COC_USER');
-    const password = await getSecret('COC_PASSWORD');
+    const email = await getSecret(COC_USER);
+    const password = await getSecret(COC_PASSWORD);
 
     await api_coc.login({
         email,
@@ -69,7 +72,10 @@ export const handler = async (event: AppDiscordEvent) => {
         );
     }
     catch (e) {
-        console.error(e);
+        const error = e as Error;
+
+        console.error(error);
+        await logError(error);
 
         await callDiscord({
             method  : 'PATCH',
@@ -81,9 +87,9 @@ export const handler = async (event: AppDiscordEvent) => {
             bearer  : auth.access_token,
             jsonBody: {
                 type   : InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-expect-error
-                content: `${e.message}\n${e.stack}`,
+                content: `something went wrong. show this to ryan:\n`
+                + `\`log group:      \` ${process.env.AWS_LAMBDA_LOG_GROUP_NAME}\n`
+                + `\`lambda instance:\` ${process.env.AWS_LAMBDA_LOG_STREAM_NAME}\n`,
             },
         });
     }

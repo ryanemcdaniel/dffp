@@ -6,14 +6,15 @@ import {reduce} from 'fp-ts/Array';
 import type {RESTPostAPIApplicationCommandsJSONBody} from 'discord-api-types/v10';
 import {COMMANDS} from '#src/discord/commands.ts';
 import {authDiscord} from '#src/discord/api/auth-discord.ts';
+import {DISCORD_APP_ID, DISCORD_CLIENT_ID, DISCORD_CLIENT_SECRET, DISCORD_PUBLIC_KEY} from '#src/constants-secrets.ts';
 
 /**
  * @init
  */
-const discord_public_key = await getSecret('DISCORD_PUBLIC_KEY');
-const discord_app_id = await getSecret('DISCORD_APP_ID');
-const discord_client_id = await getSecret('DISCORD_CLIENT_ID');
-const discord_client_secret = await getSecret('DISCORD_CLIENT_SECRET');
+const discord_public_key = await getSecret(DISCORD_PUBLIC_KEY);
+const discord_app_id = await getSecret(DISCORD_APP_ID);
+const discord_client_id = await getSecret(DISCORD_CLIENT_ID);
+const discord_client_secret = await getSecret(DISCORD_CLIENT_SECRET);
 
 const COMMAND_CONFIG = pipe(
     COMMANDS,
