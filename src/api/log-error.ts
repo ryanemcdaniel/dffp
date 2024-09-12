@@ -21,7 +21,7 @@ export const logError = async (error: Error) => {
                 error.message,
                 error.stack as string,
                 error.cause as string,
-            ]),
+            ]).join(''),
         },
     });
 };
