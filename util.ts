@@ -10,8 +10,3 @@ export const show = <T>(obj: T): T => {
     console.log('kb', bytes.length / 1024);
     return obj;
 };
-
-export const noClient = <T extends {client: any}>(obj: T): T => {
-    const {client, ...rest} = obj;
-    return rest;
-};

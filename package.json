@@ -10,7 +10,7 @@
     },
     "type": "module",
     "scripts": {
-        "types": "tsc --project tsconfig.json --noEmit",
+        "types": "tsc --project tsconfig.check.json --noEmit",
         "build": "dffp build && dffp build -c esbuild.config.cjs.ts",
         "coverage": "vitest --coverage",
         "lint": "eslint .",

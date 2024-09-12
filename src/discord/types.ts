@@ -45,10 +45,17 @@ export const buildCommand
             = map((option) => (ops) => [option.name, ops?.filter((o) => o.name === option.name)[0]?.value])(spec.options);
 
         return [spec.name, async (inner: DiscordInteraction) => {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-return
             const namedOptions = pipe(getOps, map((getter) => getter(inner.data.options)), fromEntries);
 
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
             inner.data.options = namedOptions;
 
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
             return await fn(inner);
         }] as const;
     };

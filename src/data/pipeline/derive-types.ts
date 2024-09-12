@@ -6,12 +6,12 @@ export type DerivedWar =
     & DispatchedWar
     & {
         clans: (DispatchedClan & {
-            _id_war         : UUID;
-            score_stars     : num;
-            score_dmg       : num;
-            score_duration  : num;
-            score_atks      : num;
-            score_atks_total: num;
+            _id_war: UUID;
+            // score_stars     : num;
+            // score_dmg       : num;
+            // score_duration  : num;
+            // score_atks      : num;
+            // score_atks_total: num;
         })[];
         players: (DispatchedPlayer & {
             _id_war : UUID;

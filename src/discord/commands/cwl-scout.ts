@@ -1,14 +1,11 @@
 import {buildCommand} from '#src/discord/types.ts';
 import {COMMANDS} from '#src/discord/commands.ts';
-import {getAliasTag} from '#src/discord/command-util/get-alias-tag.ts';
-import {getExhaustive, getLimit, getPlayerInfo} from '#src/discord/command-util/default-options.ts';
 import {pipe} from 'fp-ts/function';
 import {mapL} from '#src/data/pure-list.ts';
 import {describeScout} from '#src/data/model-descriptive/describe-scout.ts';
 import {messageEmbedScout} from '#src/discord/command-util/message-embed-scout.ts';
 import {dBold, dCode, dHdr1, dLines, nNatr} from '#src/discord/command-util/message.ts';
 import {describeSamples} from '#src/data/model-descriptive/describe-samples.ts';
-import {api_coc} from '#src/lambdas/client-api-coc.ts';
 import {dTable} from '#src/discord/command-util/message-table.ts';
 import {toEntries} from 'fp-ts/Record';
 import {buildGraphModel} from '#src/data/build-graph-model.ts';
@@ -22,9 +19,12 @@ export const cwlScout = buildCommand(COMMANDS.CWL_SCOUT, async (body) => {
         graph.opponentClans,
         mapL((c) => describeScout({
             model          : graph.model,
+            clan           : graph.clan,
             clanTag        : graph.clanTag,
             clanMembers    : [],
             currentWar     : graph.currentWar,
+            opponent       : graph.opponent,
+            opponentClans  : [],
             opponentTag    : c.tag,
             opponentMembers: c.members,
         })),
