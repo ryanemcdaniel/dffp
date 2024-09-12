@@ -8,12 +8,12 @@ import {dBold, dCode, dEmpL, dHdr3, dLine, dLink, dSubH, nNatT} from '#src/disco
 import {concatL, mapIdxL, mapL, sortL} from '#src/data/pure-list.ts';
 import {dTable} from '#src/discord/command-util/message-table.ts';
 import {getSharedOptions} from '#src/discord/command-util/shared-options.ts';
-import {fetchCurrentClashEntities} from '#src/discord/command-util/fetch-clash-entities.ts';
+import {fetchWarEntities} from '#src/discord/command-util/fetch-war-entities.ts';
 
 export const warLinks = buildCommand(COMMANDS.WAR_LINK, async (body) => {
     const options = getSharedOptions(body);
 
-    const entities = await fetchCurrentClashEntities(options);
+    const entities = await fetchWarEntities(options);
 
     const opponentMembers = pipe(
         entities.currentWar[0].opponent.members,

@@ -5,14 +5,14 @@ import {accumulateWarData, optimizeGraphModel} from '#src/data/pipeline/optimize
 import {callCkWarsByClan} from '#src/data/api/api-ck-previous-wars.ts';
 import {callCkWarsByPlayer} from '#src/data/api/api-ck-previous-hits.ts';
 import type {SharedOptions} from '#src/discord/command-util/shared-options.ts';
-import {fetchCurrentClashEntities} from '#src/discord/command-util/fetch-clash-entities.ts';
+import {fetchWarEntities} from '#src/discord/command-util/fetch-war-entities.ts';
 import {filterL, mapL} from '#src/data/pure-list.ts';
 import {findFirst} from 'fp-ts/Array';
 import {toUndefined} from 'fp-ts/Option';
 import {sortMapPosition} from '#src/data/api/api-coc.ts';
 
 export const buildGraphModel = async (ops: SharedOptions) => {
-    const entities = await fetchCurrentClashEntities(ops);
+    const entities = await fetchWarEntities(ops);
 
     const cids = pipe(entities.current.clans, mapL((c) => c.tag));
     const previousWars = await callCkWarsByClan(cids, ops.limit);
