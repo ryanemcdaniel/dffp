@@ -14,13 +14,15 @@ import {reduce} from 'fp-ts/ReadonlyArray';
 import type {IDKV} from '#src/data/types.ts';
 import type {buildCommand, EmbedSpec} from '#src/discord/types.ts';
 import {EMBED_COLOR} from '#src/discord/command-util/message-embed.ts';
+import {logError} from '#src/api/log-error.ts';
+import {COC_PASSWORD, COC_USER} from '#src/constants-secrets.ts';
 
 /**
  * @init
  */
 const init = (async () => {
-    const email = await getSecret('COC_USER');
-    const password = await getSecret('COC_PASSWORD');
+    const email = await getSecret(COC_USER);
+    const password = await getSecret(COC_PASSWORD);
 
     await api_coc.login({
         email,
@@ -69,7 +71,10 @@ export const handler = async (event: AppDiscordEvent) => {
         );
     }
     catch (e) {
-        console.error(e);
+        const error = e as Error;
+
+        console.error(error);
+        await logError(error);
 
         await callDiscord({
             method  : 'PATCH',

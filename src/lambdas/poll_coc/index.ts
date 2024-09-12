@@ -4,13 +4,14 @@ import type {PollCocEvent, PollRecord} from '#src/lambdas/types-events.ts';
 import {tryJson} from '#src/lambdas/util.ts';
 import {pollClans} from '#src/lambdas/poll_coc/polls/clans.ts';
 import {pollPlayers} from '#src/lambdas/poll_coc/polls/players.ts';
+import {COC_PASSWORD, COC_USER} from '#src/constants-secrets.ts';
 
 /**
  * @init
  */
 const init = (async () => {
-    const email = await getSecret('COC_USER');
-    const password = await getSecret('COC_PASSWORD');
+    const email = await getSecret(COC_USER);
+    const password = await getSecret(COC_PASSWORD);
 
     await api_coc.login({
         email,
