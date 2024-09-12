@@ -16,6 +16,7 @@ import type {buildCommand, EmbedSpec} from '#src/discord/types.ts';
 import {EMBED_COLOR} from '#src/discord/command-util/message-embed.ts';
 import {logError} from '#src/api/log-error.ts';
 import {COC_PASSWORD, COC_USER} from '#src/constants-secrets.ts';
+import * as process from 'node:process';
 
 /**
  * @init
@@ -86,9 +87,7 @@ export const handler = async (event: AppDiscordEvent) => {
             bearer  : auth.access_token,
             jsonBody: {
                 type   : InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-expect-error
-                content: `${e.message}\n${e.stack}`,
+                content: `something went wrong. show this to ryan:\n${process.env.AWS_LAMBDA_LOG_GROUP_NAME}\n${process.env.AWS_LAMBDA_LOG_STREAM_NAME}`,
             },
         });
     }
