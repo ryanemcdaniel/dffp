@@ -24,8 +24,7 @@ export const buildGraphModel = async (ops: SharedOptions) => {
 
     const currentWar = pipe(
         entities.current.wars,
-        findFirst((w) =>
-            !w.isWarEnded && w.isPreparationDay && [w.clan.tag, w.opponent.tag].includes(ops.cid1)),
+        findFirst((w) => !w.isWarEnded && w.isPreparationDay && [w.clan.tag, w.opponent.tag].includes(ops.cid1)),
         toUndefined,
     )!;
 
@@ -54,12 +53,3 @@ export const buildGraphModel = async (ops: SharedOptions) => {
         ),
     };
 };
-
-// pipe(
-//     entities.current.clans,
-//     findFirstMap((c) => c.tag === ops.cid1
-//         ? some(c.members)
-//         : none),
-//     fold(() => [], identity),
-//     sortMapPosition,
-// ),

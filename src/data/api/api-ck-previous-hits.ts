@@ -58,7 +58,7 @@ export type CK_Player_PreviousHits = {
     defenses: CK_Player_PreviousHitsAttack[];
 };
 
-export const callPreviousHitsByPlayer = async (tag: string, limit) => await callClashKing<{items: CK_Player_PreviousHits[]}>({
+export const callPreviousHitsByPlayer = async (tag: string, limit: num) => await callClashKing<{items: CK_Player_PreviousHits[]}>({
     method: 'GET',
     path  : `/player/${encodeURIComponent(tag)}/warhits`,
     query : {

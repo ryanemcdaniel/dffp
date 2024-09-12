@@ -1,5 +1,5 @@
 import type {int, isodate, num, unixdate, url} from '#src/data/types-pure.ts';
-import {callClashKing, CK_LIMIT} from '#src/data/api/api-ck.ts';
+import {callClashKing} from '#src/data/api/api-ck.ts';
 
 export type CK_War_Member = {
     tag               : string;
