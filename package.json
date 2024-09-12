@@ -38,7 +38,9 @@
         "discord-interactions": "4.1.0",
         "fp-ts": "2.16.9",
         "joi": "17.13.3",
+        "natural": "8.0.1",
         "simple-statistics": "7.8.5",
+        "string-similarity": "4.0.4",
         "uuid": "10.0.0"
     },
     "devDependencies": {

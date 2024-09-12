@@ -28,7 +28,7 @@ export const messageEmbedScout = (scout: ReturnType<typeof describeScout>) => {
             ['win:loss', nIdex(scout.record.wins / scout.record.losses), ''],
             ['trojan', nIdex(scout.trojanHorseIndex), '0 = early, 1 = late'],
             ['sequence', nIdex(scout.sequenceIndex), '1 = 1-man-army'],
-            ['similarity', dNotA(), '1 = 1-man-army'],
+            ['similarity', nIdex(scout.similarityIndex), '1 = 1-man-army'],
             ['activity', dNotA(), ''],
             ['attack 𝞰', dNotA(), ''],
             ['defend 𝞰', dNotA(), ''],

@@ -50,8 +50,10 @@ export const handler = async (req: APIGatewayProxyEventBase<null>): Promise<APIG
     catch (e) {
         const error = e as Error | Boom;
 
-        console.error(error, req);
-        await logError(error);
+        if (error.message !== 'invalid request signature') {
+            console.error(error, req);
+            await logError(error);
+        }
 
         const boom = 'isBoom' in error
             ? error
