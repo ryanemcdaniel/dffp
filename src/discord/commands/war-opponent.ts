@@ -1,32 +1,30 @@
-import {flow, pipe} from 'fp-ts/function';
+import {pipe} from 'fp-ts/function';
 import {descriptiveHitRates} from '#src/data/model-descriptive/descriptive-hit-rates.ts';
 import {buildCommand} from '#src/discord/types.ts';
 import {COMMANDS} from '#src/discord/commands.ts';
 import {buildGraphModel} from '#src/data/build-graph-model.ts';
-import {concatL, filterIdxL, flatMapL, flattenL, mapIdxL, zipL} from '#src/data/pure-list.ts';
-import {getFromTo} from '#src/discord/command-util/default-options.ts';
+import {concatL, filterIdxL, flattenL, mapIdxL, zipL} from '#src/data/pure-list.ts';
 import {
-    dCrss, dEmpL,
+    dEmpL,
     dHdr3,
     dLines,
-    dNewL,
     dSubC,
-    dSUCr,
-    dSUnC,
     nNatr,
     nNatT,
     nPrct,
 } from '#src/discord/command-util/message.ts';
 import {dTable} from '#src/discord/command-util/message-table.ts';
-import {identity} from 'fp-ts';
+import {getSharedOptions} from '#src/discord/command-util/shared-options.ts';
 
 export const warOpponent = buildCommand(COMMANDS.WAR_OPPONENT, async (body) => {
-    const graph = await buildGraphModel(body.data.options.clan);
+    const options = getSharedOptions(body);
+
+    const graph = await buildGraphModel(options);
 
     const clanRates = descriptiveHitRates(graph.clanTag, graph.clanMembers, graph.model);
     const opponentRates = descriptiveHitRates(graph.opponentTag, graph.opponentMembers, graph.model);
 
-    const [from, to] = getFromTo(body);
+    const [from, to] = [options.from, options.to];
 
     const rates = pipe(
         zipL(clanRates, opponentRates),

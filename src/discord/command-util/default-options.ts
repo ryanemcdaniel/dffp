@@ -1,8 +1,13 @@
-export const getFromTo = (body) => {
+export const getFrom = (body) => {
     const from = Number(String(body.data.options.from ?? '1'));
+
+    return from;
+};
+
+export const getTo = (body) => {
     const to = Number(String(body.data.options.to ?? '50'));
 
-    return [from, to];
+    return to;
 };
 
 export const getLimit = (body) => {
@@ -18,5 +23,5 @@ export const getExhaustive = (body) => {
 };
 
 export const getPlayerInfo = (body) => {
-    return Boolean(body.data.options.playerinfo);
+    return Boolean(body.data.options.latest);
 };

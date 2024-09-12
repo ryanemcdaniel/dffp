@@ -5,15 +5,18 @@ import {fromCompare} from 'fp-ts/Ord';
 import {OrdN} from '#src/data/pure.ts';
 import type {ClanWarMember} from 'clashofclans.js';
 import {dBold, dCode, dEmpL, dHdr3, dLine, dLink, dSubH, nNatT} from '#src/discord/command-util/message.ts';
-import {concatL, mapL, sortL} from '#src/data/pure-list.ts';
+import {concatL, mapIdxL, mapL, sortL} from '#src/data/pure-list.ts';
 import {dTable} from '#src/discord/command-util/message-table.ts';
-import {fetchCurrentClanWar} from '#src/discord/command-util/fetch-current.ts';
+import {getSharedOptions} from '#src/discord/command-util/shared-options.ts';
+import {fetchCurrentClashEntities} from '#src/discord/command-util/fetch-clash-entities.ts';
 
 export const warLinks = buildCommand(COMMANDS.WAR_LINK, async (body) => {
-    const war = await fetchCurrentClanWar(body.data.options.clan);
+    const options = getSharedOptions(body);
+
+    const entities = await fetchCurrentClashEntities(options);
 
     const opponentMembers = pipe(
-        war.opponent.members,
+        entities.currentWar[0].opponent.members,
         sortL(fromCompare<ClanWarMember>((a, b) => OrdN.compare(a.mapPosition, b.mapPosition))),
     );
 
@@ -21,14 +24,14 @@ export const warLinks = buildCommand(COMMANDS.WAR_LINK, async (body) => {
         title: '',
         desc : pipe(
             [
-                dHdr3(`${war.clan.name} vs. ${war.opponent.name}`),
-                dLink('click to open opponent clan in-game', war.opponent.shareLink),
+                dHdr3(`${entities.currentWar[0].clan.name} vs. ${entities.currentWar[0].opponent.name}`),
+                dLink('click to open opponent clan in-game', entities.currentWar[0].opponent.shareLink),
                 dEmpL(),
             ],
             concatL(pipe(
                 [['wr', 'th', 'tag', 'name/link']],
-                concatL(pipe(opponentMembers, mapL((m) =>
-                    [nNatT(m.mapPosition), nNatT(m.townHallLevel), m.tag, dCode(dBold(dLink(m.name, m.shareLink)))],
+                concatL(pipe(opponentMembers, mapIdxL((idx, m) =>
+                    [nNatT(idx + options.from), nNatT(m.townHallLevel), m.tag, dCode(dBold(dLink(m.name, m.shareLink)))],
                 ))),
                 dTable,
                 mapL(dCode),

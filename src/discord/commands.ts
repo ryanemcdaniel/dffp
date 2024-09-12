@@ -71,7 +71,6 @@ export const COMMANDS = {
             OPTION_LIMIT,
             OPTION_LATEST_PLAYER_INFO,
             OPTION_EXHAUSTIVE,
-            {name: 'ope', type: ApplicationCommandOptionType.Boolean, description: 'ope'},
         ],
     } as const,
 

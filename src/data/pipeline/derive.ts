@@ -1,14 +1,11 @@
-import type {DispatchedClan, DispatchedHit, DispatchedModel, DispatchedPlayer, DispatchedWar} from '#src/data/pipeline/ingest-types.ts';
+import type {DispatchedClan, DispatchedModel, DispatchedPlayer, DispatchedWar} from '#src/data/pipeline/ingest-types.ts';
 import type {DerivedHit, DerivedModel, DerivedWar} from '#src/data/pipeline/derive-types.ts';
 import {pipe} from 'fp-ts/function';
 import {filter, map, reduce, sort} from 'fp-ts/Array';
-import {fromCompare} from 'fp-ts/Ord';
-import {Ord} from 'fp-ts/number';
 import type {IDKV} from '#src/data/types.ts';
 import type {n_bool} from '#src/data/types-pure.ts';
 import console from 'node:console';
-
-const orderHits = fromCompare<DispatchedHit>((h1, h2) => Ord.compare(h1.order, h2.order));
+import {orderHits} from '#src/data/pure.ts';
 
 export const deriveWar = (war: DispatchedWar): DerivedWar => {
     const clans = pipe(war.clans, reduce({} as IDKV<DispatchedClan>, (acc, c) => {
@@ -50,7 +47,8 @@ export const deriveWar = (war: DispatchedWar): DerivedWar => {
                 _id_defender     : players[h.d_pid]._id,
                 _id_defender_clan: clans[players[h.d_pid].cid]._id,
 
-                order_norm: h.order / (war.rules_atks * war.rules_size * 2), // 2 attacks per member per clan
+                order_norm: h.order / (war.hits.length), // 2 attacks per member per clan
+                // order_norm : h.order / (war.rules_atks * war.rules_size * 2), // 2 attacks per member per clan
 
                 ore0,
                 ore1,

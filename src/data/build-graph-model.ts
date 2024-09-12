@@ -1,55 +1,55 @@
-import {api_coc} from '#src/lambdas/client-api-coc.ts';
 import {pipe} from 'fp-ts/function';
-import {concat, map, sort} from 'fp-ts/Array';
-import {fromCompare} from 'fp-ts/Ord';
-import type {ClanWarMember} from 'clashofclans.js';
-import {Ord} from 'fp-ts/number';
-import {getAliasTag} from '#src/discord/command-util/get-alias-tag.ts';
-import {notFound} from '@hapi/boom';
 import {ingestCkToModel} from '#src/data/pipeline/ingest-ck.ts';
 import {deriveModel} from '#src/data/pipeline/derive.ts';
 import {accumulateWarData, optimizeGraphModel} from '#src/data/pipeline/optimize-graph-model.ts';
 import {callCkWarsByClan} from '#src/data/api/api-ck-previous-wars.ts';
 import {callCkWarsByPlayer} from '#src/data/api/api-ck-previous-hits.ts';
+import type {SharedOptions} from '#src/discord/command-util/shared-options.ts';
+import {fetchCurrentClashEntities} from '#src/discord/command-util/fetch-clash-entities.ts';
+import {filterL, mapL} from '#src/data/pure-list.ts';
+import {findFirst} from 'fp-ts/Array';
+import {toUndefined} from 'fp-ts/Option';
+import {sortMapPosition} from '#src/data/api/api-coc.ts';
 
-export const buildGraphModel = async (maybeCid?: string, withCurrent: boolean = false, otherWars: boolean = false) => {
-    const clanTag = getAliasTag(maybeCid);
+export const buildGraphModel = async (ops: SharedOptions) => {
+    const entities = await fetchCurrentClashEntities(ops);
 
-    const war = await api_coc.getCurrentWar(clanTag);
+    const cids = pipe(entities.current.clans, mapL((c) => c.tag));
+    const previousWars = await callCkWarsByClan(cids, ops.limit);
 
-    if (!war) {
-        throw notFound('no current war data available');
-    }
-
-    if (war.isWarEnded) {
-        throw notFound('current war has already ended');
-    }
-
-    const clanMembers = pipe(war.clan.members, sort(fromCompare<ClanWarMember>((a, b) => Ord.compare(a.mapPosition, b.mapPosition))));
-    const opponentTag = war.opponent.tag;
-    const opponentMembers = pipe(war.opponent.members, sort(fromCompare<ClanWarMember>((a, b) => Ord.compare(a.mapPosition, b.mapPosition))));
-
-    const playerTags = pipe(clanMembers, concat(opponentMembers), map((m) => m.tag));
-    const players = withCurrent
-        ? await api_coc.getPlayers(playerTags)
+    const pids = pipe(entities.current.players, mapL((p) => p.tag));
+    const previousWarsByPlayer = ops.exhaustive
+        ? await callCkWarsByPlayer(pids, ops.limit)
         : [];
 
-    const previousWarsByClan = await callCkWarsByClan([clanTag, opponentTag]);
-    const previousWarsByPlayer = otherWars
-        ? await callCkWarsByPlayer(playerTags)
-        : [];
+    const currentWar = pipe(
+        entities.current.wars,
+        findFirst((w) => !w.isWarEnded && w.isPreparationDay && [w.clan.tag, w.opponent.tag].includes(ops.cid1)),
+        toUndefined,
+    )!;
+
+    const [clan, opponent] = currentWar.clan.tag === ops.cid1
+        ? [currentWar.clan, currentWar.opponent]
+        : [currentWar.opponent, currentWar.clan];
 
     return {
         model: pipe(
-            ingestCkToModel(previousWarsByClan, players, previousWarsByPlayer),
+            ingestCkToModel(previousWars, entities.current.players, previousWarsByPlayer),
             deriveModel,
             accumulateWarData,
             optimizeGraphModel,
         ),
-        clanTag,
-        clanMembers,
-        opponentTag,
-        opponentMembers,
-        currentWar: war,
+        clan,
+        clanTag        : ops.cid1,
+        clanMembers    : pipe(clan.members, sortMapPosition),
+        opponent,
+        opponentTag    : opponent.tag,
+        opponentMembers: pipe(opponent.members, sortMapPosition),
+        currentWar,
+        opponentClans  : pipe(
+            entities.current.wars,
+            filterL((w) => !w.isWarEnded && w.isPreparationDay),
+            mapL((w) => w.clan),
+        ),
     };
 };
