@@ -53,7 +53,7 @@ export const handler = async (event: AppDiscordEvent) => {
 
         show(body);
 
-        auth = await authDiscord(discord.client_id, discord.client_secret, 'identify connections');
+        auth = await authDiscord(discord.client_id, discord.client_secret, 'identify');
 
         const message: EmbedSpec[] = await commands[body.data.name](body);
 

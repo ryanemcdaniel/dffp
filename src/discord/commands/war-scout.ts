@@ -29,7 +29,9 @@ export const warScout = buildCommand(COMMANDS.WAR_SCOUT, async (body) => {
         ].flat()),
     }, {
         desc: messageEmbedScout(scout),
-    }, {
-        desc: messageEmbedScoutRanks(scout),
-    }];
+    },
+    // {
+    //     desc: messageEmbedScoutRanks(scout),
+    // },
+    ];
 });

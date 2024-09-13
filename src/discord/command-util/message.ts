@@ -26,7 +26,7 @@ export const dEmpL = () => ``;
 export const dLine = (s: string) => `${s}\n`;
 export const dLines = (s: string[]) => pipe(s, mapL(dLine));
 
-export const nIdex = (n: num) => n.toPrecision(2);
+export const nIdex = (n: num) => n.toFixed(2);
 export const nPrct = (n: num) => `${(n * 100).toFixed()}%`.padStart(3);
 export const nNatr = (n: num) => `${Math.ceil(n)}`.padStart(2);
 export const nNatT = (n: num) => `${n}`.padStart(2);

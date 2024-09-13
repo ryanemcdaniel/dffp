@@ -51,7 +51,7 @@ export const bindApiCall = (baseUrl: string) =>
 
         console.log(`[${url.hostname}][${ops.method} ${ops.path}]:`, {
             headers: req.headers,
-            body   : ops.jsonBody,
+            body   : ops.body ?? ops.body,
         });
 
         const resp = await fetch(req);
@@ -61,7 +61,11 @@ export const bindApiCall = (baseUrl: string) =>
         });
 
         if (!resp.ok) {
-            throw new Error(`[${url.hostname}][${ops.method} ${ops.path}]: ${resp.status} ${resp.statusText}`);
+            const text = await resp.text();
+
+            const err = new Error(`[${url.hostname}][${ops.method} ${ops.path}]: ${resp.status} ${resp.statusText}\n${text}`);
+
+            throw err;
         }
 
         let json: RJSON;

@@ -1,7 +1,6 @@
 import {
     dBold,
     dCode,
-    dEmpL,
     dHdr3,
     dLines,
     dNotA,
@@ -28,7 +27,7 @@ export const messageEmbedScout = (scout: ReturnType<typeof describeScout>) => {
             ['win:loss', nIdex(scout.record.wins / scout.record.losses), ''],
             ['trojan', nIdex(scout.trojanHorseIndex), '0 = early, 1 = late'],
             ['sequence', nIdex(scout.sequenceIndex), '1 = 1-man-army'],
-            ['similarity', dNotA(), '1 = 1-man-army'],
+            ['similarity', nIdex(scout.similarityIndex), '1 = 1-man-army'],
             ['activity', dNotA(), ''],
             ['attack 𝞰', dNotA(), ''],
             ['defend 𝞰', dNotA(), ''],
@@ -36,6 +35,7 @@ export const messageEmbedScout = (scout: ReturnType<typeof describeScout>) => {
         ]), mapL(dSubC)),
         dBold('war operations'),
         pipe(dTable([
+            ['th16 hit rate', nPrct(scout.th16hr), ''],
             ['3 star attempts', nNatr(scout.hitsAttempt.length / scout.wars.length), nPrct((scout.hitsAttempt.length) / scout.hitsPossible)],
             ['hits missed', nNatr((scout.hitsPossible - scout.attacks.length) / scout.wars.length), nPrct((scout.hitsPossible - scout.attacks.length) / scout.hitsPossible)],
             ['ore hits', nNatr(scout.hitsOre.length / scout.wars.length), nPrct((scout.hitsOre.length) / scout.hitsPossible)],
