@@ -53,6 +53,7 @@
         "@types/aws-lambda": "8.10.145",
         "@types/eslint__js": "8.42.3",
         "@types/node": "22.5.1",
+        "@types/string-similarity": "4.0.2",
         "@types/uuid": "10.0.0",
         "@vitest/coverage-istanbul": "2.0.5",
         "discord-api-types": "0.37.98",

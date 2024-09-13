@@ -10,6 +10,7 @@ import {collect} from 'fp-ts/Record';
 import {fromCompare} from 'fp-ts/Ord';
 import type {OptimizedHit} from '#src/data/pipeline/optimize-types.ts';
 import {compareTwoStrings} from 'string-similarity';
+import type {num} from '#src/data/types-pure.ts';
 
 export const describeScout = (graph: Awaited<ReturnType<typeof buildGraphModel>>) => {
     const wars = pipe(graph.model, queryWarsByClan(graph.opponentTag));
@@ -70,14 +71,12 @@ export const describeScout = (graph: Awaited<ReturnType<typeof buildGraphModel>>
 
     const similarityIndex = pipe(
         graph.opponentMembers,
-        reduceL([], (ms, m) => {
-            const arr = [];
+        reduceL([] as num[], (ms, m) => {
             for (const m2 of graph.opponentMembers) {
                 if (m.tag !== m2.tag) {
-                    arr.push(compareTwoStrings(m.name, m2.name));
+                    ms.push(compareTwoStrings(m.name, m2.name));
                 }
             }
-            ms.push(...arr);
             return ms;
         }),
         standardDeviation,
